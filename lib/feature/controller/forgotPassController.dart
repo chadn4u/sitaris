@@ -15,7 +15,7 @@ class ForgotPasswordController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    themeController = Get.put(ThemeController());
+    themeController = Get.find<ThemeController>();
     theme = themeController.getTheme();
     outlineInputBorder = const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(8)),

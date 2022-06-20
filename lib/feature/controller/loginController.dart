@@ -23,7 +23,7 @@ class LoginController extends GetxController {
         color: Colors.transparent,
       ),
     );
-    themeController = Get.put(ThemeController());
+    themeController = Get.find<ThemeController>();
     theme = themeController.getTheme();
   }
 
@@ -52,6 +52,7 @@ class LoginController extends GetxController {
 
   void login() {
     if (formKey.currentState!.validate()) {
+      Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
       // Navigator.of(Get.context!, rootNavigator: true).pushReplacement(
       //   MaterialPageRoute(
       //     builder: (context) => RentalServiceFullApp(),
