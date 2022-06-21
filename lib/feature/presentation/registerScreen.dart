@@ -14,28 +14,34 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding:
-            FxSpacing.fromLTRB(20, FxSpacing.safeAreaTop(context) + 20, 20, 20),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FxText.headlineLarge(
-                "Create account",
-                fontWeight: 700,
-              ),
-              FxText.bodyLarge(
-                "Sign up to new account",
-                fontWeight: 600,
-              ),
-              FxSpacing.height(40),
-              registerForm(),
-              FxSpacing.height(20),
-              registerBtn(),
-              FxSpacing.height(20),
-              loginBtn(),
-            ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: FxSpacing.fromLTRB(
+              20,
+              FxSpacing.safeAreaTop(context) +
+                  MediaQuery.of(Get.context!).size.height * 0.15,
+              20,
+              20),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FxText.headlineLarge(
+                  "Create account",
+                  fontWeight: 700,
+                ),
+                FxText.bodyLarge(
+                  "Sign up to new account",
+                  fontWeight: 600,
+                ),
+                FxSpacing.height(40),
+                registerForm(),
+                FxSpacing.height(20),
+                registerBtn(),
+                FxSpacing.height(20),
+                loginBtn(),
+              ],
+            ),
           ),
         ),
       ),

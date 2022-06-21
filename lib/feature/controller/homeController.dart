@@ -9,6 +9,10 @@ class HomeController extends GetxController {
   late List<Map<String, dynamic>> dummy;
   late List<Map<String, dynamic>> dummyList;
 
+  ScrollController scrollController = ScrollController();
+  late TabController tabController;
+  RxInt selectedIndex = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
