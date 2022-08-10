@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/loginController.dart';
 import 'package:sitaris/utils/button.dart';
@@ -32,26 +30,29 @@ class _LoginScreenState extends State<LoginScreen> {
       padding:
           FxSpacing.fromLTRB(20, FxSpacing.safeAreaTop(context) + 20, 20, 20),
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FxText.displayLarge(
-              "Hello",
-              fontWeight: 700,
-            ),
-            FxText.bodyLarge(
-              "Sign in to your account",
-              fontWeight: 600,
-            ),
-            FxSpacing.height(40),
-            loginForm(),
-            FxSpacing.height(12),
-            forgotPassword(),
-            FxSpacing.height(20),
-            loginButton(),
-            FxSpacing.height(20),
-            registerBtn(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FxText.displayLarge(
+                "Hello",
+                fontWeight: 700,
+              ),
+              FxText.bodyLarge(
+                "Sign in to your account",
+                fontWeight: 600,
+              ),
+              FxSpacing.height(40),
+              loginForm(),
+              FxSpacing.height(12),
+              forgotPassword(),
+              FxSpacing.height(20),
+              loginButton(),
+              FxSpacing.height(20),
+              registerBtn(),
+            ],
+          ),
         ),
       ),
     ));
@@ -79,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           isDense: true,
           filled: true,
-          hintText: "Email Address",
+          hintText: "Phone Number",
           enabledBorder: controller.outlineInputBorder,
           focusedBorder: controller.outlineInputBorder,
           border: controller.outlineInputBorder,

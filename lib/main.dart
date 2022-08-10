@@ -4,9 +4,16 @@ import 'package:sitaris/feature/presentation/loginScreen.dart';
 import 'package:sitaris/route/routes.dart';
 
 import 'base/bindingBase.dart';
+import 'core/network/rest_client.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initServices();
   runApp(const MyApp());
+}
+
+initServices() async {
+  await Get.putAsync<RestClient>(() => RestClient().init());
 }
 
 class MyApp extends StatelessWidget {
