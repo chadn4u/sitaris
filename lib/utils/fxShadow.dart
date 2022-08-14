@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_initializing_formals
+// ignore_for_file: prefer_initializing_formals, file_names, prefer_if_null_operators
 
 import 'package:flutter/material.dart';
 
@@ -51,13 +51,15 @@ class FxShadow {
         case FxShadowPosition.topRight:
           this.offset = Offset(elevation, -elevation);
           break;
+        // ignore: todo
         //TODO: Shadow problem
         case FxShadowPosition.centerLeft:
           this.offset = Offset(-elevation, elevation * 0.25);
           break;
         case FxShadowPosition.center:
-          this.offset = Offset(0, 0);
+          this.offset = const Offset(0, 0);
           break;
+        // ignore: todo
         //TODO: Shadow problem
         case FxShadowPosition.centerRight:
           this.offset = Offset(elevation, elevation * 0.25);
@@ -104,13 +106,15 @@ class FxShadow {
         case FxShadowPosition.topRight:
           this.offset = Offset(elevation, -elevation);
           break;
+        // ignore: todo
         //TODO: Shadow problem
         case FxShadowPosition.centerLeft:
           this.offset = Offset(-elevation, elevation * 0.25);
           break;
         case FxShadowPosition.center:
-          this.offset = Offset(0, 0);
+          this.offset = const Offset(0, 0);
           break;
+        // ignore: todo
         //TODO: Shadow problem
         case FxShadowPosition.centerRight:
           this.offset = Offset(elevation, elevation * 0.25);

@@ -1,6 +1,6 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:sitaris/feature/controller/accountController.dart';
@@ -20,7 +20,7 @@ class AccountScreen extends StatelessWidget {
           backgroundColor: accountController.theme.scaffoldBackgroundColor,
           elevation: 0,
           centerTitle: true,
-          title: FxText.titleMedium("Account Setting", fontWeight: 600),
+          title: const FxText.titleMedium("Account Setting", fontWeight: 600),
         ),
         body: Obx(
           () => ScrollConfiguration(
@@ -28,7 +28,7 @@ class AccountScreen extends StatelessWidget {
             child: ListView(
               padding: FxSpacing.nTop(20),
               children: <Widget>[
-                FxText.bodyLarge("Personal information",
+                const FxText.bodyLarge("Personal information",
                     fontWeight: 600, letterSpacing: 0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class AccountScreen extends StatelessWidget {
                             size: 22,
                           ),
                           isDense: true,
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         textCapitalization: TextCapitalization.sentences,
@@ -122,7 +122,7 @@ class AccountScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 24, bottom: 0),
-                  child: FxText.bodyLarge("Company information",
+                  child: const FxText.bodyLarge("Company information",
                       fontWeight: 600, letterSpacing: 0),
                 ),
                 Column(
@@ -207,7 +207,7 @@ class AccountScreen extends StatelessWidget {
                             size: 22,
                           ),
                           isDense: true,
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                         textCapitalization: TextCapitalization.sentences,
                       ),
@@ -249,7 +249,7 @@ class AccountScreen extends StatelessWidget {
                             size: 22,
                           ),
                           isDense: true,
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                         textCapitalization: TextCapitalization.sentences,
                       ),
@@ -258,7 +258,7 @@ class AccountScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 24),
-                  child: FxText.bodyLarge("Change Password",
+                  child: const FxText.bodyLarge("Change Password",
                       fontWeight: 600, letterSpacing: 0),
                 ),
                 Container(
@@ -357,36 +357,74 @@ class AccountScreen extends StatelessWidget {
                     obscureText: accountController.passwordVisible.value,
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: accountController.theme.colorScheme.primary
-                                .withAlpha(28),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accountController
+                                    .theme.colorScheme.primary
+                                    .withAlpha(28),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                            padding:
-                                MaterialStateProperty.all(FxSpacing.xy(16, 0))),
-                        child: FxText.bodyMedium("SAVE",
-                            fontWeight: 600,
-                            color:
-                                accountController.theme.colorScheme.onPrimary),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    FxSpacing.xy(16, 0))),
+                            child: FxText.bodyMedium("SAVE",
+                                fontWeight: 600,
+                                color: accountController
+                                    .theme.colorScheme.onPrimary),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(4)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accountController
+                                    .theme.colorScheme.primary
+                                    .withAlpha(28),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              accountController.logout();
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    FxSpacing.xy(16, 0))),
+                            child: FxText.bodyMedium("Logout",
+                                fontWeight: 600,
+                                color: accountController
+                                    .theme.colorScheme.onPrimary),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

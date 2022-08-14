@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/registerController.dart';
@@ -26,11 +28,11 @@ class RegisterScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FxText.headlineLarge(
+                const FxText.headlineLarge(
                   "Create account",
                   fontWeight: 700,
                 ),
-                FxText.bodyLarge(
+                const FxText.bodyLarge(
                   "Sign up to new account",
                   fontWeight: 600,
                 ),
@@ -76,7 +78,7 @@ class RegisterScreen extends StatelessWidget {
           enabledBorder: controller.outlineInputBorder,
           focusedBorder: controller.outlineInputBorder,
           border: controller.outlineInputBorder,
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: const Icon(Icons.person),
           contentPadding: FxSpacing.all(16),
           hintStyle: FxTextStyle.bodyMedium(xMuted: true),
           isCollapsed: true),
@@ -99,7 +101,7 @@ class RegisterScreen extends StatelessWidget {
           enabledBorder: controller.outlineInputBorder,
           focusedBorder: controller.outlineInputBorder,
           border: controller.outlineInputBorder,
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: const Icon(Icons.person),
           contentPadding: FxSpacing.all(16),
           hintStyle: FxTextStyle.bodyMedium(xMuted: true),
           isCollapsed: true),
@@ -148,7 +150,7 @@ class RegisterScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.headlineLarge(
+        const FxText.headlineLarge(
           "Create",
           fontWeight: 700,
         ),
@@ -173,7 +175,7 @@ class RegisterScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.bodySmall(
+        const FxText.bodySmall(
           "Already have an account?",
         ),
         FxButton.text(

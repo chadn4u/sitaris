@@ -1,7 +1,7 @@
+// ignore_for_file: file_names, prefer_const_constructors_in_immutables, use_key_in_widget_constructors, library_private_types_in_public_api, deprecated_member_use_from_same_package
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/textType.dart';

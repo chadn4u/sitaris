@@ -34,4 +34,14 @@ class Utils {
       arguments: args,
     );
   }
+
+  static void showSnackBar({required String text}) {
+    Get.showSnackbar(GetSnackBar(
+      isDismissible: true,
+      duration: const Duration(seconds: 3),
+      leftBarIndicatorColor: Colors.red,
+      message: text,
+      snackPosition: SnackPosition.BOTTOM,
+    ));
+  }
 }

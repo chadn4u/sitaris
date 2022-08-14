@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -65,7 +67,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.rounded(
+  const FxButton.rounded(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -90,7 +92,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.small(
+  const FxButton.small(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -115,7 +117,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.medium(
+  const FxButton.medium(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -140,7 +142,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.text(
+  const FxButton.text(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -165,7 +167,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.block(
+  const FxButton.block(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -190,7 +192,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.outlined(
+  const FxButton.outlined(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -215,7 +217,7 @@ class FxButton extends StatelessWidget {
       this.shadowColor,
       this.splashColor});
 
-  FxButton.large(
+  const FxButton.large(
       {required this.onPressed,
       required this.child,
       this.msPadding,
@@ -248,7 +250,6 @@ class FxButton extends StatelessWidget {
     if (buttonType == FxButtonType.outlined) {
       button = OutlinedButton(
         onPressed: onPressed,
-        child: child,
         style: style ??
             ButtonStyle(
                 side: msSide ??
@@ -273,6 +274,7 @@ class FxButton extends StatelessWidget {
                       borderRadius: BorderRadius.circular(
                           borderRadiusAll ?? FxConstant.constant.buttonRadius),
                     ))),
+        child: child,
       );
     } else if (buttonType == FxButtonType.elevated) {
       button = ElevatedButton(
@@ -294,8 +296,9 @@ class FxButton extends StatelessWidget {
                   backgroundColor: msBackgroundColor ??
                       MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled))
+                          if (states.contains(MaterialState.disabled)) {
                             return bgColor.withAlpha(100);
+                          }
                           return bgColor;
                         },
                       ),

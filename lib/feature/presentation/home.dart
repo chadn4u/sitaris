@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_unnecessary_containers, unused_element
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/homeController.dart';
 import 'package:sitaris/feature/presentation/account.dart';
 import 'package:sitaris/feature/presentation/orders.dart';
-import 'package:sitaris/feature/presentation/scan.dart';
+import 'package:sitaris/feature/presentation/staff/scan.dart';
 import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/fxCard.dart';
 import 'package:sitaris/utils/scrollBehavior.dart';
@@ -204,7 +206,7 @@ class _HomeScreen extends StatelessWidget {
               children: [
                 Container(
                     margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: FxText.bodyMedium("Selamat datang, Tia.",
+                    child: const FxText.bodyMedium("Selamat datang, Tia.",
                         fontWeight: 600, letterSpacing: 0.3)),
                 Align(
                   alignment: Alignment.center,
@@ -212,7 +214,7 @@ class _HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: InkWell(
                       onTap: () {
-                        print('test');
+                        debugPrint('test');
                       },
                       child: const Icon(
                         Icons.notifications,
@@ -259,7 +261,7 @@ class _HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(
                   top: 20, left: 20, right: 20, bottom: 20),
-              child: FxText.bodySmall("Pekerjaan wajib diselesaikan",
+              child: const FxText.bodySmall("Pekerjaan wajib diselesaikan",
                   fontWeight: 600, letterSpacing: 0.3),
             ),
             Expanded(
@@ -364,6 +366,7 @@ class _ListData extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             FxText.titleSmall(
                               data[index]["title"],
@@ -374,7 +377,6 @@ class _ListData extends StatelessWidget {
                               fontWeight: 600,
                             ),
                           ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
                         ),
                       ),
                       FxText.titleSmall(

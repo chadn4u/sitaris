@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new
+
 class FxStringValidator {
   static bool isFirstCapital(String string) {
     if (string.codeUnitAt(0) >= 65 && string.codeUnitAt(0) <= 90) {

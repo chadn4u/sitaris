@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sitaris/feature/presentation/loginScreen.dart';
+import 'package:sitaris/feature/presentation/onBoard.dart';
 import 'package:sitaris/route/routes.dart';
 
 import 'base/bindingBase.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       getPages: RoutingClass.LISTPAGE,
-      home: const LoginScreen(),
+      home: const OnBoardScreen(),
       initialBinding: HomeBinding(),
     );
   }

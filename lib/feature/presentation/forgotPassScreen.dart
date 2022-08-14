@@ -1,6 +1,6 @@
+// ignore_for_file: file_names, must_be_immutable
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/forgotPassController.dart';
 import 'package:sitaris/utils/constants.dart';
@@ -26,11 +26,11 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FxText.headlineLarge(
+              const FxText.headlineLarge(
                 "Forgot Password?",
                 fontWeight: 700,
               ),
-              FxText.bodyLarge(
+              const FxText.bodyLarge(
                 "Enter email to proceed further",
                 fontWeight: 600,
               ),
@@ -86,7 +86,7 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.headlineLarge(
+        const FxText.headlineLarge(
           "Submit",
           fontWeight: 700,
         ),
@@ -111,7 +111,7 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.bodySmall(
+        const FxText.bodySmall(
           "Not a Member?",
         ),
         FxSpacing.width(8),

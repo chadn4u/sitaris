@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -140,7 +142,7 @@ class ThemeController extends GetxController {
     canvasColor: Colors.transparent,
 
     /// AppBar Theme
-    appBarTheme: AppBarTheme(backgroundColor: Color(0xff161616)),
+    appBarTheme: const AppBarTheme(backgroundColor: Color(0xff161616)),
 
     /// Card Theme
     cardTheme: const CardTheme(color: Color(0xff222327)),
@@ -248,7 +250,7 @@ class ThemeController extends GetxController {
   );
 
   ThemeData getTheme() {
-    return createThemeM3(themeType, Color(0xff2e87a6));
+    return createThemeM3(themeType, const Color(0xff2e87a6));
   }
 
   ThemeData createThemeM3(ThemeType themeType, Color seedColor) {

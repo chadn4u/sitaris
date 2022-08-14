@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/base/baseController.dart';
@@ -6,7 +8,6 @@ import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/login.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/utils.dart';
-import 'package:sitaris/utils/validators.dart';
 
 class LoginController extends BaseController {
   GlobalKey<FormState> formKey = GlobalKey();
@@ -63,7 +64,7 @@ class LoginController extends BaseController {
 
       try {
         final result =
-            await restClient.request(BASE_URL + "logins", Method.POST, {
+            await restClient.request("${BASE_URL}logins", Method.POST, {
           "password": passwordController.value.text,
           "usercellno": emailController.value.text
         });
@@ -72,23 +73,24 @@ class LoginController extends BaseController {
           var data = BaseResponseLogin.fromJson(result.data);
           // print(data.status);
           if (data.status!) {
-            print("sukses");
+            addSession(data.data!);
+            debugPrint("sukses");
             switch (data.data!.lvlLog) {
-              case "staffadmin":
+              case "staffin":
                 Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
+                Get.delete<LoginController>();
                 break;
               case "partner":
                 Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
+                Get.delete<LoginController>();
                 break;
               default:
                 Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
+                Get.delete<LoginController>();
                 break;
             }
           } else {
-            Get.showSnackbar(GetBar(
-              message: data.message,
-              duration: Duration(milliseconds: 3000),
-            ));
+            Utils.showSnackBar(text: data.message!);
           }
 
           // listPosts.addAll(data.postList);
@@ -102,14 +104,11 @@ class LoginController extends BaseController {
           //   }
           // }
         } else {
-          print('gagal');
+          debugPrint('gagal');
           // isToLoadMore = false;
         }
       } on Exception catch (e) {
-        Get.showSnackbar(GetBar(
-          message: "$e",
-          duration: Duration(milliseconds: 3000),
-        ));
+        Utils.showSnackBar(text: e.toString());
       }
       // Navigator.of(Get.context!, rootNavigator: true).pushReplacement(
       //   MaterialPageRoute(
@@ -117,7 +116,7 @@ class LoginController extends BaseController {
       //   ),
       // );
     } else {
-      print('gagal auth');
+      debugPrint('gagal auth');
     }
   }
 
@@ -127,5 +126,19 @@ class LoginController extends BaseController {
 
   void goToRegisterScreen() {
     Utils.offAndToNamed(name: AppRoutes.REGISTERSCREEN);
+  }
+
+  void addSession(LoginModel data) {
+    sessionController.setCompCellNo(data.compCellNo);
+    sessionController.setCompCode(data.compCode);
+    sessionController.setCompEmail(data.emailComp);
+    sessionController.setCompName(data.compName);
+    sessionController.setKey(data.key);
+    sessionController.setLvlLog(data.lvlLog);
+    sessionController.setUserCellNo(data.userCellNo);
+    sessionController.setUserCode(data.userCode);
+    sessionController.setUserEmail(data.emailUsr);
+    sessionController.setUserLvl(data.lvlUsr);
+    sessionController.setUserName(data.userName);
   }
 }

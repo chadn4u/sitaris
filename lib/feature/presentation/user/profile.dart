@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_string_escapes
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
@@ -30,10 +32,10 @@ class _UserProfileState extends State<UserProfile> {
       child: Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
           body: ListView(
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: 16),
+                margin: const EdgeInsets.only(top: 16),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -47,11 +49,11 @@ class _UserProfileState extends State<UserProfile> {
                         //         AssetImage("./assets/images/profile/avatar_3.jpg"),
                         //     fit: BoxFit.fill),
                       ),
-                      child: Icon(Icons.person),
+                      child: const Icon(Icons.person),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 8),
-                      child: FxText.titleMedium("Derrick Malone",
+                      margin: const EdgeInsets.only(top: 8),
+                      child: const FxText.titleMedium("Derrick Malone",
                           fontWeight: 600, letterSpacing: 0),
                     ),
                   ],
@@ -94,46 +96,46 @@ class _UserProfileState extends State<UserProfile> {
               //   ),
               // ),
               Container(
-                margin: EdgeInsets.only(top: 24),
+                margin: const EdgeInsets.only(top: 24),
                 child: Column(
                   children: <Widget>[
                     singleOption(
                         iconData: Icons.person, option: "Edit Profile"),
-                    Divider(),
+                    const Divider(),
                     singleOption(
                         iconData: FeatherIcons.mail,
                         option: "Notification",
                         navigation: Container()),
-                    Divider(),
+                    const Divider(),
                     singleOption(
                         iconData: FeatherIcons.helpCircle,
                         option: "Help \& Support",
                         navigation: Container()),
-                    Divider(),
+                    const Divider(),
                     singleOption(
                         iconData: FeatherIcons.userPlus,
                         option: "About Us",
                         navigation: Container()),
                     Container(
-                      margin: EdgeInsets.only(top: 24),
+                      margin: const EdgeInsets.only(top: 24),
                       child: ElevatedButton(
                         style: ButtonStyle(
                             padding:
                                 MaterialStateProperty.all(FxSpacing.xy(16, 0))),
                         onPressed: () {
-                          // Navigator.pop(context);
+                          controller.logout();
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Icon(
+                            const Icon(
                               FeatherIcons.logOut,
                               color: Colors.white,
                               size: 18,
                             ),
                             Container(
-                              margin: EdgeInsets.only(left: 16),
-                              child: FxText.bodySmall("LOGOUT",
+                              margin: const EdgeInsets.only(left: 16),
+                              child: const FxText.bodySmall("LOGOUT",
                                   letterSpacing: 0.3,
                                   fontWeight: 600,
                                   color: Colors.white),
@@ -153,33 +155,29 @@ class _UserProfileState extends State<UserProfile> {
   Widget singleOption(
       {IconData? iconData, required String option, Widget? navigation}) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: InkWell(
         onTap: () {
-          if (navigation != null)
+          if (navigation != null) {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => navigation));
+          }
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Container(
-              child: Icon(
-                iconData,
-                size: 22,
-                color: Colors.black,
-              ),
+            Icon(
+              iconData,
+              size: 22,
+              color: Colors.black,
             ),
             Expanded(
               child: Container(
-                margin: EdgeInsets.only(left: 16),
+                margin: const EdgeInsets.only(left: 16),
                 child: FxText.bodyLarge(option, fontWeight: 600),
               ),
             ),
-            Container(
-              child:
-                  Icon(FeatherIcons.arrowRight, size: 22, color: Colors.black),
-            ),
+            const Icon(FeatherIcons.arrowRight, size: 22, color: Colors.black),
           ],
         ),
       ),

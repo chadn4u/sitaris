@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
@@ -33,7 +35,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         appBar: AppBar(
           backgroundColor: theme.scaffoldBackgroundColor,
           elevation: 0,
-          title: FxText.bodyLarge("Upload Berkas",
+          title: const FxText.bodyLarge("Upload Berkas",
               color: Colors.black, fontWeight: 600),
           automaticallyImplyLeading: false,
           centerTitle: true,
@@ -46,7 +48,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               children: <Widget>[
                 Container(
                   margin: FxSpacing.fromLTRB(24, 0, 0, 0),
-                  child: FxText.bodySmall("DUE",
+                  child: const FxText.bodySmall("DUE",
                       fontWeight: 700, muted: true, color: Colors.black),
                 ),
                 Container(

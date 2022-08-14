@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, deprecated_member_use_from_same_package, prefer_if_null_operators
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sitaris/utils/theme.dart';

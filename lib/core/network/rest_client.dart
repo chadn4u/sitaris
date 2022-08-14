@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, unused_catch_clause
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as d;
@@ -6,7 +6,7 @@ import 'dart:io';
 
 enum Method { POST, GET, PUT, DELETE, PATCH }
 
-const BASE_URL = "https://sitaris.web.id/st-json/public/api/v1/";
+const BASE_URL = "http://sitaris.web.id/st-json/public/api/v1/";
 
 class RestClient extends GetxService {
   late d.Dio _dio;
@@ -17,6 +17,9 @@ class RestClient extends GetxService {
 
   Future<RestClient> init() async {
     _dio = d.Dio(d.BaseOptions(baseUrl: BASE_URL, headers: header()));
+    _dio.options.connectTimeout = 30000;
+    _dio.options.receiveTimeout = 30000;
+    _dio.interceptors.add(d.LogInterceptor(responseBody: true));
     initInterceptors();
     return this;
   }

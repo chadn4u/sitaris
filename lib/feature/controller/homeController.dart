@@ -1,8 +1,11 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
 
-class HomeController extends GetxController {
+class HomeController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
 
@@ -17,6 +20,8 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     themeController = Get.find<ThemeController>();
+
+    debugPrint('Value session ${sessionController.compCellNo!.value}');
 
     theme = themeController.getTheme();
 

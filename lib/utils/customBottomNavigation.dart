@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, use_key_in_widget_constructors, prefer_if_null_operators
+
 import 'package:flutter/material.dart';
 import 'package:sitaris/utils/text.dart';
 
@@ -120,10 +122,10 @@ class _ItemWidget extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Container(
             width: isSelected ? 130 : 50,
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -147,7 +149,7 @@ class _ItemWidget extends StatelessWidget {
                   ),
                   if (isSelected)
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: FxText.labelMedium(
                         item.title,
                         color: item.activeColor,

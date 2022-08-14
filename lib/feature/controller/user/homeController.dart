@@ -1,9 +1,14 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sitaris/base/baseController.dart';
+import 'package:sitaris/route/routes.dart';
+import 'package:sitaris/utils/utils.dart';
 
 import '../themeController.dart';
 
-class HomeController extends GetxController {
+class HomeController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
 
@@ -20,5 +25,12 @@ class HomeController extends GetxController {
     themeController = Get.find<ThemeController>();
 
     theme = themeController.getTheme();
+  }
+
+  void logout() {
+    sessionController.clearSession();
+    Utils.offAndToNamed(name: AppRoutes.LOGINSCREEN);
+    // Get.delete<AccountController>();
+    Get.delete<HomeController>();
   }
 }

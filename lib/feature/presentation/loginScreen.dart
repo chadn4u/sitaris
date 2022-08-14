@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/loginController.dart';
@@ -20,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    controller = Get.find<LoginController>();
+    controller = Get.put(LoginController());
   }
 
   @override
@@ -35,11 +37,11 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FxText.displayLarge(
+              const FxText.displayLarge(
                 "Hello",
                 fontWeight: 700,
               ),
-              FxText.bodyLarge(
+              const FxText.bodyLarge(
                 "Sign in to your account",
                 fontWeight: 600,
               ),
@@ -109,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
             enabledBorder: controller.outlineInputBorder,
             focusedBorder: controller.outlineInputBorder,
             border: controller.outlineInputBorder,
-            prefixIcon: Icon(Icons.lock),
+            prefixIcon: const Icon(Icons.lock),
             suffixIcon: InkWell(
                 onTap: () {
                   controller.toggle();
@@ -132,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.headlineLarge(
+        const FxText.headlineLarge(
           "Sign In",
           fontWeight: 700,
         ),
@@ -175,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        FxText.bodySmall(
+        const FxText.bodySmall(
           "Don't have an account?",
         ),
         FxButton.text(
