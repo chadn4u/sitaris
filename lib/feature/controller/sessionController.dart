@@ -91,6 +91,22 @@ class SessionController extends GetxController {
     }
   }
 
+  RxString? bankId;
+  void setBankId(String? value) {
+    if (value != null) {
+      bankId = value.obs;
+      session.addToString(value, 'bankId');
+    }
+  }
+
+  RxString? bankNm;
+  void setBankNm(String? value) {
+    if (value != null) {
+      bankNm = value.obs;
+      session.addToString(value, 'bankNm');
+    }
+  }
+
   void init() async {
     await session.create();
     setAccessToken(session.getStringVal("accessToken"));
@@ -103,6 +119,8 @@ class SessionController extends GetxController {
     setPhone(session.getStringVal("phone"));
     setRoleId(session.getStringVal("roleId"));
     setRoleName(session.getStringVal("roleName"));
+    setBankId(session.getStringVal("bankId"));
+    setBankNm(session.getStringVal("bankNm"));
   }
 
   void clearSession() {
@@ -117,5 +135,7 @@ class SessionController extends GetxController {
     setPhone(null);
     setRoleId(null);
     setRoleName(null);
+    setBankId(null);
+    setBankNm(null);
   }
 }

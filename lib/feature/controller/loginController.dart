@@ -126,5 +126,7 @@ class LoginController extends BaseController {
     sessionController.setPhone(data.phone);
     sessionController.setRoleId(data.roleId);
     sessionController.setRoleName(data.roleName);
+    sessionController.setBankId(data.bankId);
+    sessionController.setBankNm(data.bankNm);
   }
 }

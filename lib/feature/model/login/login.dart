@@ -9,7 +9,8 @@ class LoginModel {
   late String? activeFg;
   late String? roleName;
   late String? deptName;
-
+  late String? bankId;
+  late String? bankNm;
   LoginModel(
       {this.id,
       this.name,
@@ -19,7 +20,9 @@ class LoginModel {
       this.phone,
       this.activeFg,
       this.roleName,
-      this.deptName});
+      this.deptName,
+      this.bankId,
+      this.bankNm});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -31,6 +34,8 @@ class LoginModel {
     activeFg = json['active_fg'];
     roleName = json['role_name'];
     deptName = json['dept_nm'];
+    bankId = json['bank_id'];
+    bankNm = json['bank_nm'];
   }
 
   // Map<String, dynamic> toJson() {

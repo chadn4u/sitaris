@@ -6,7 +6,6 @@ import 'package:sitaris/feature/presentation/user/createOrder.dart';
 import 'package:sitaris/feature/presentation/user/profile.dart';
 import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/customBottomNavigation.dart';
-import 'package:sitaris/utils/customIcon.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textField.dart';
@@ -22,22 +21,20 @@ class UserHomeScreen extends StatefulWidget {
 class _UserHomeScreenState extends State<UserHomeScreen> {
   int _currentIndex = 0;
   late ThemeData theme;
-  PageController? _pageController;
   // late CustomTheme customTheme;
   late HomeController controller;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
     controller = Get.put(HomeController());
+    controller.ctx = context;
     theme = controller.theme;
     // customTheme = AppTheme.customTheme;
   }
 
   @override
   void dispose() {
-    _pageController!.dispose();
     super.dispose();
   }
 
@@ -97,7 +94,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               ),
             ),
       body: PageView(
-        controller: _pageController,
+        controller: controller.pageController,
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (index) {
           setState(() => _currentIndex = index);
@@ -128,13 +125,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     () => Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ...controller.listMenu.value
+                          ...controller.listMenu
                               .map((e) => Expanded(
                                     child: InkWell(
                                       onTap: () {
-                                        _pageController!.jumpToPage(4);
+                                        if (e!.prodId == "0") {
+                                          controller.openBottomSheet();
+                                        }
+                                        // _pageController!.jumpToPage(4);
                                       },
-                                      child: _CategoryWidget(
+                                      child: CategoryWidget(
                                         iconData:
                                             controller.getIcon(e!.prodId!),
                                         actionText: e.prodNm!,
@@ -204,7 +204,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         selectedIndex: _currentIndex,
         onItemSelected: (index) {
           setState(() => _currentIndex = index);
-          _pageController!.jumpToPage(index);
+          controller.pageController!.jumpToPage(index);
         },
         items: <CustomBottomNavigationBarItem>[
           /*-------------- Build tabs here -----------------*/
@@ -347,12 +347,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }
 }
 
-class _CategoryWidget extends StatelessWidget {
+class CategoryWidget extends StatelessWidget {
   final IconData iconData;
   final String actionText;
   final bool isSelected;
 
-  const _CategoryWidget(
+  const CategoryWidget(
       {Key? key,
       required this.iconData,
       required this.actionText,
@@ -364,7 +364,7 @@ class _CategoryWidget extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 12),
-      height: MediaQuery.of(context).size.height * 0.15,
+      height: MediaQuery.of(context).size.height * 0.1,
       child: Column(
         children: <Widget>[
           ClipOval(

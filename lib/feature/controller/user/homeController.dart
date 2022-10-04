@@ -9,14 +9,18 @@ import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/utils.dart';
 
 import '../../../utils/customIcon.dart';
+import '../../presentation/user/home.dart';
 import '../themeController.dart';
 
 class HomeController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
+
+  PageController? pageController;
   ApiRepository _apiRepository = ApiRepository();
   RxList<ProductModel?> listDataProduct = <ProductModel?>[].obs;
   RxList<ProductModel?> listMenu = <ProductModel?>[].obs;
+  late BuildContext ctx;
 
   // late List<Map<String, dynamic>> dummy;
   // late List<Map<String, dynamic>> dummyList;
@@ -28,10 +32,18 @@ class HomeController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+
+    pageController = PageController();
     themeController = Get.find<ThemeController>();
     getProduct();
 
     theme = themeController.getTheme();
+  }
+
+  @override
+  void onClose() {
+    pageController!.dispose();
+    super.onClose();
   }
 
   void getProduct() async {
@@ -72,5 +84,35 @@ class HomeController extends BaseController {
       default:
         return Icons.more_horiz_outlined;
     }
+  }
+
+  void openBottomSheet() {
+    Get.bottomSheet(
+        Container(
+          padding: const EdgeInsets.all(8.0),
+          height: MediaQuery.of(ctx).size.height * 0.4,
+          child: GridView.count(
+            crossAxisCount: 4,
+            childAspectRatio: 1,
+            children: [
+              ...listDataProduct
+                  .map((e) => InkWell(
+                        onTap: () {
+                          pageController!.jumpToPage(4);
+                          Get.back();
+                        },
+                        child: CategoryWidget(
+                          iconData: getIcon(e!.prodId!),
+                          actionText: e.prodNm!,
+                          isSelected: false,
+                        ),
+                      ))
+                  .toList()
+            ],
+          ),
+        ),
+        elevation: 2.0,
+        backgroundColor: theme.backgroundColor,
+        barrierColor: Colors.grey.withOpacity(0.2));
   }
 }
