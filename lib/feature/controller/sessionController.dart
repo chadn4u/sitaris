@@ -129,5 +129,17 @@ class SessionController extends GetxController {
 
   void clearSession() {
     session.clear();
+    setCompCellNo(null);
+
+    setCompCode(null);
+    setCompEmail(null);
+    setCompName(null);
+    setKey(null);
+    setLvlLog(null);
+    setUserCellNo(null);
+    setUserCode(null);
+    setUserEmail(null);
+    setUserLvl(null);
+    setUserName(null);
   }
 }
