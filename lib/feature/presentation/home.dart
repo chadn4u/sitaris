@@ -52,6 +52,10 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: Colors.blue,
+        ),
         bottomNavigationBar: Obx(
           () => BottomAppBar(
               elevation: 0,
@@ -206,8 +210,10 @@ class _HomeScreen extends StatelessWidget {
               children: [
                 Container(
                     margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: const FxText.bodyMedium("Selamat datang, Tia.",
-                        fontWeight: 600, letterSpacing: 0.3)),
+                    child: FxText.bodyMedium(
+                        "Selamat datang, ${controller.sessionController.name!.value.toUpperCase()}.",
+                        fontWeight: 600,
+                        letterSpacing: 0.3)),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
@@ -318,7 +324,7 @@ class _HomeScreen extends StatelessWidget {
             FxSpacing.height(4),
             FxText.labelSmall(
               category["title"],
-              fontSize: 10,
+              fontSize: 9,
               textAlign: TextAlign.center,
               color: controller.theme.colorScheme.onBackground,
             )

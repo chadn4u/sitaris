@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/utils/sessionUtils.dart';
 
@@ -12,134 +11,111 @@ class SessionController extends GetxController {
     init();
   }
 
-  RxString? compCode;
-  void setCompCode(String? value) {
+  RxString? accessToken;
+  void setAccessToken(String? value) {
     if (value != null) {
-      compCode = value.obs;
-      session.addToString(value, 'compCode');
-    }
-    debugPrint("session ${session.getStringVal('compCode')}");
-  }
-
-  RxString? compName;
-  void setCompName(String? value) {
-    if (value != null) {
-      compName = value.obs;
-
-      session.addToString(value, 'compName');
+      accessToken = value.obs;
+      session.addToString(value, 'accessToken');
     }
   }
 
-  RxString? compCellNo;
-  void setCompCellNo(String? value) {
+  RxString? id;
+  void setId(String? value) {
     if (value != null) {
-      compCellNo = value.obs;
-
-      session.addToString(value, 'compCellNo');
+      id = value.obs;
+      session.addToString(value, 'id');
     }
   }
 
-  RxString? compEmail;
-  void setCompEmail(String? value) {
+  RxString? name;
+  void setName(String? value) {
     if (value != null) {
-      compEmail = value.obs;
-
-      session.addToString(value, 'compEmail');
+      name = value.obs;
+      session.addToString(value, 'name');
     }
   }
 
-  RxString? key;
-  void setKey(String? value) {
+  RxString? email;
+  void setEmail(String? value) {
     if (value != null) {
-      key = value.obs;
-
-      session.addToString(value, 'key');
+      email = value.obs;
+      session.addToString(value, 'email');
     }
   }
 
-  RxString? userCode;
-  void setUserCode(String? value) {
+  RxString? roleId;
+  void setRoleId(String? value) {
     if (value != null) {
-      key = value.obs;
-
-      session.addToString(value, 'userCode');
+      roleId = value.obs;
+      session.addToString(value, 'roleId');
     }
   }
 
-  RxString? userName;
-  void setUserName(String? value) {
+  RxString? deptId;
+  void setDeptId(String? value) {
     if (value != null) {
-      userName = value.obs;
-
-      session.addToString(value, 'userName');
+      deptId = value.obs;
+      session.addToString(value, 'deptId');
     }
   }
 
-  RxString? userCellNo;
-  void setUserCellNo(String? value) {
+  RxString? phone;
+  void setPhone(String? value) {
     if (value != null) {
-      userCellNo = value.obs;
-
-      session.addToString(value, 'userCellNo');
+      phone = value.obs;
+      session.addToString(value, 'phone');
     }
   }
 
-  RxString? userEmail;
-  void setUserEmail(String? value) {
+  RxString? activeFg;
+  void setActiveFg(String? value) {
     if (value != null) {
-      userEmail = value.obs;
-
-      session.addToString(value, 'userEmail');
+      activeFg = value.obs;
+      session.addToString(value, 'activeFg');
     }
   }
 
-  RxString? userLvl;
-  void setUserLvl(String? value) {
+  RxString? roleName;
+  void setRoleName(String? value) {
     if (value != null) {
-      userLvl = value.obs;
-
-      session.addToString(value, 'userLvl');
+      roleName = value.obs;
+      session.addToString(value, 'roleName');
     }
   }
 
-  RxString? lvlLog;
-  void setLvlLog(String? value) {
+  RxString? deptName;
+  void setDeptName(String? value) {
     if (value != null) {
-      lvlLog = value.obs;
-
-      session.addToString(value, 'lvlLog');
+      deptName = value.obs;
+      session.addToString(value, 'deptName');
     }
   }
 
   void init() async {
     await session.create();
-    setCompCellNo(session.getStringVal('compCellNo'));
-
-    setCompCode(session.getStringVal('compCode'));
-    setCompEmail(session.getStringVal('index'));
-    setCompName(session.getStringVal('compName'));
-    setKey(session.getStringVal('key'));
-    setLvlLog(session.getStringVal('lvlLog'));
-    setUserCellNo(session.getStringVal('userCellNo'));
-    setUserCode(session.getStringVal('userCode'));
-    setUserEmail(session.getStringVal('userEmail'));
-    setUserLvl(session.getStringVal('userLvl'));
-    setUserName(session.getStringVal('userName'));
+    setAccessToken(session.getStringVal("accessToken"));
+    setActiveFg(session.getStringVal("activeFg"));
+    setDeptId(session.getStringVal("deptId"));
+    setDeptName(session.getStringVal("deptName"));
+    setEmail(session.getStringVal("email"));
+    setId(session.getStringVal("id"));
+    setName(session.getStringVal("name"));
+    setPhone(session.getStringVal("phone"));
+    setRoleId(session.getStringVal("roleId"));
+    setRoleName(session.getStringVal("roleName"));
   }
 
   void clearSession() {
     session.clear();
-    setCompCellNo(null);
-
-    setCompCode(null);
-    setCompEmail(null);
-    setCompName(null);
-    setKey(null);
-    setLvlLog(null);
-    setUserCellNo(null);
-    setUserCode(null);
-    setUserEmail(null);
-    setUserLvl(null);
-    setUserName(null);
+    setAccessToken(null);
+    setActiveFg(null);
+    setDeptId(null);
+    setDeptName(null);
+    setEmail(null);
+    setId(null);
+    setName(null);
+    setPhone(null);
+    setRoleId(null);
+    setRoleName(null);
   }
 }

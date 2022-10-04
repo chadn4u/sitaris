@@ -11,7 +11,6 @@ import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textField.dart';
 import 'package:sitaris/utils/textType.dart';
-import 'package:sitaris/utils/utils.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({Key? key}) : super(key: key);
@@ -125,51 +124,44 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       borderRadius:
                           const BorderRadius.all(Radius.circular(10.0)),
                       color: theme.scaffoldBackgroundColor),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {},
-                          child: const _CategoryWidget(
-                            iconData: FFIcons.k012Notary,
-                            actionText: "Balik Nama",
-                            isSelected: true,
-                          ),
+                  child: Obx(
+                    () => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ...controller.listMenu.value
+                              .map((e) => Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        _pageController!.jumpToPage(4);
+                                      },
+                                      child: _CategoryWidget(
+                                        iconData:
+                                            controller.getIcon(e!.prodId!),
+                                        actionText: e.prodNm!,
+                                        isSelected: false,
+                                      ),
+                                    ),
+                                  ))
+                              .toList()
+                          // [...list.map((e) => _card(e)).toList()]
+                        ]
+                        // <Widget>[
+
+                        // Expanded(
+                        //   child: InkWell(
+                        //     onTap: () {
+                        //       _pageController!.jumpToPage(4);
+                        //     },
+                        //     child: const _CategoryWidget(
+                        //       iconData: FFIcons.k023Division,
+                        //       actionText: "Hibah",
+                        //       isSelected: false,
+                        //     ),
+                        //   ),
+                        // ),
+
+                        // ],
                         ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {},
-                          child: const _CategoryWidget(
-                            iconData: FFIcons.k044Calculate,
-                            actionText: "Karate",
-                            isSelected: false,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            _pageController!.jumpToPage(4);
-                          },
-                          child: const _CategoryWidget(
-                            iconData: FFIcons.k023Division,
-                            actionText: "Hibah",
-                            isSelected: false,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {},
-                          child: const _CategoryWidget(
-                              iconData: FFIcons.k032LastWill,
-                              isSelected: false,
-                              actionText: "Cycling"),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
@@ -372,7 +364,7 @@ class _CategoryWidget extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 12),
-      height: MediaQuery.of(context).size.height * 0.1,
+      height: MediaQuery.of(context).size.height * 0.15,
       child: Column(
         children: <Widget>[
           ClipOval(
@@ -382,8 +374,8 @@ class _CategoryWidget extends StatelessWidget {
               //     ? theme.colorScheme.primary
               //     : theme.colorScheme.primary.withAlpha(20),
               child: SizedBox(
-                  width: 52,
-                  height: 52,
+                  width: 30,
+                  height: 30,
                   child: Icon(iconData, color: const Color(0xFF57636C)
                       // isSelected
                       //     ? theme.colorScheme.onPrimary
@@ -393,8 +385,8 @@ class _CategoryWidget extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child:
-                FxText.bodySmall(actionText, fontWeight: 600, letterSpacing: 0),
+            child: FxText.labelMedium(actionText,
+                fontWeight: 600, letterSpacing: 0, textAlign: TextAlign.center),
           )
         ],
       ),

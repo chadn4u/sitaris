@@ -4,17 +4,18 @@ import 'package:sitaris/feature/presentation/onBoard.dart';
 import 'package:sitaris/route/routes.dart';
 
 import 'base/bindingBase.dart';
-import 'core/network/rest_client.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  initServices();
+  // initServices();
   runApp(const MyApp());
 }
 
-initServices() async {
-  await Get.putAsync<RestClient>(() => RestClient().init());
-}
+// initServices() async {
+//   WidgetsBinding.instance.addPostFrameCallback((_) async {
+//     await Get.putAsync<RestClient>(() => RestClient().init());
+//   });
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

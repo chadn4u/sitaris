@@ -21,7 +21,7 @@ class HomeController extends BaseController {
     super.onInit();
     themeController = Get.find<ThemeController>();
 
-    debugPrint('Value session ${sessionController.compCellNo!.value}');
+    // debugPrint('Value session ${sessionController.compCellNo!.value}');
 
     theme = themeController.getTheme();
 

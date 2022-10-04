@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/base/baseController.dart';
-import 'package:sitaris/core/network/rest_client.dart';
+import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
-import 'package:sitaris/feature/model/login.dart';
+import 'package:sitaris/feature/model/login/login.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/utils.dart';
 
@@ -18,6 +18,7 @@ class LoginController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
   RxBool enable = false.obs;
+  ApiRepository _apiRepository = ApiRepository();
 
   final baseLoginData = <BaseResponseLogin>[].obs;
   @override
@@ -59,62 +60,49 @@ class LoginController extends BaseController {
 
   void login() async {
     if (formKey.currentState!.validate()) {
-      //Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
-      // Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
-
       try {
-        final result =
-            await restClient.request("${BASE_URL}logins", Method.POST, {
+        BaseResponseLogin result = await _apiRepository.postLogin(data: {
           "password": passwordController.value.text,
-          "usercellno": emailController.value.text
+          "username": emailController.value.text
         });
 
-        if (result != null) {
-          var data = BaseResponseLogin.fromJson(result.data);
-          // print(data.status);
-          if (data.status!) {
-            addSession(data.data!);
-            debugPrint("sukses");
-            switch (data.data!.lvlLog) {
-              case "staffin":
-                Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
-                Get.delete<LoginController>();
-                break;
-              case "partner":
-                Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
-                Get.delete<LoginController>();
-                break;
-              default:
-                Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
-                Get.delete<LoginController>();
-                break;
-            }
-          } else {
-            Utils.showSnackBar(text: data.message!);
+        // print(data.status);
+        if (result.status!) {
+          LoginModel? data = result.data;
+          addSession(data!);
+          debugPrint("sukses");
+          switch (data.roleId) {
+            case "1": // ADMIN
+              Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
+              Get.delete<LoginController>();
+              break;
+            case "3": // Client
+              Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
+              Get.delete<LoginController>();
+              break;
+            default: //3 Staff
+              Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
+              Get.delete<LoginController>();
+              break;
           }
-
-          // listPosts.addAll(data.postList);
-          // tempPosts.addAll(data.postList);
-          //   if (data != null) {
-          //     listPosts.addAll(data);
-          //     isToLoadMore = true;
-          //     change(donors, status: RxStatus.success());
-          //   } else {
-          //     isToLoadMore = false;
-          //   }
-          // }
         } else {
-          debugPrint('gagal');
-          // isToLoadMore = false;
+          Utils.showSnackBar(text: result.message!);
         }
-      } on Exception catch (e) {
-        Utils.showSnackBar(text: e.toString());
+
+        // listPosts.addAll(data.postList);
+        // tempPosts.addAll(data.postList);
+        //   if (data != null) {
+        //     listPosts.addAll(data);
+        //     isToLoadMore = true;
+        //     change(donors, status: RxStatus.success());
+        //   } else {
+        //     isToLoadMore = false;
+        //   }
+        // }
+
+      } catch (e) {
+        Utils.showSnackBar(text: "$e");
       }
-      // Navigator.of(Get.context!, rootNavigator: true).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => RentalServiceFullApp(),
-      //   ),
-      // );
     } else {
       debugPrint('gagal auth');
     }
@@ -129,16 +117,14 @@ class LoginController extends BaseController {
   }
 
   void addSession(LoginModel data) {
-    sessionController.setCompCellNo(data.compCellNo);
-    sessionController.setCompCode(data.compCode);
-    sessionController.setCompEmail(data.emailComp);
-    sessionController.setCompName(data.compName);
-    sessionController.setKey(data.key);
-    sessionController.setLvlLog(data.lvlLog);
-    sessionController.setUserCellNo(data.userCellNo);
-    sessionController.setUserCode(data.userCode);
-    sessionController.setUserEmail(data.emailUsr);
-    sessionController.setUserLvl(data.lvlUsr);
-    sessionController.setUserName(data.userName);
+    sessionController.setActiveFg(data.activeFg);
+    sessionController.setDeptId(data.deptId);
+    sessionController.setDeptName(data.deptName);
+    sessionController.setEmail(data.email);
+    sessionController.setId(data.id);
+    sessionController.setName(data.name);
+    sessionController.setPhone(data.phone);
+    sessionController.setRoleId(data.roleId);
+    sessionController.setRoleName(data.roleName);
   }
 }
