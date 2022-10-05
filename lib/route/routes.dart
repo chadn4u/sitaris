@@ -6,6 +6,7 @@ import 'package:sitaris/feature/presentation/home.dart';
 import 'package:sitaris/feature/presentation/loginScreen.dart';
 import 'package:sitaris/feature/presentation/onBoard.dart';
 import 'package:sitaris/feature/presentation/registerScreen.dart';
+import 'package:sitaris/feature/presentation/user/createOrder.dart';
 import 'package:sitaris/feature/presentation/user/home.dart';
 
 class AppRoutes {
@@ -19,6 +20,7 @@ class AppRoutes {
 
   //user
   static const String USERHOMESCREEN = '/userHomeScreen';
+  static const String USERCREATEORDER = '/userCreateOrder';
 }
 
 class RoutingClass {
@@ -34,6 +36,8 @@ class RoutingClass {
     GetPage(name: AppRoutes.HOMESCREEN, page: () => const HomeScreen()),
 
     //User
-    GetPage(name: AppRoutes.USERHOMESCREEN, page: () => const UserHomeScreen())
+    GetPage(name: AppRoutes.USERHOMESCREEN, page: () => const UserHomeScreen()),
+    GetPage(
+        name: AppRoutes.USERCREATEORDER, page: () => const CreateOrderScreen())
   ];
 }

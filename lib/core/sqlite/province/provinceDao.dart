@@ -10,13 +10,20 @@ class ProvinceDAO {
   ProvinceDAO() {}
 
   Future<void> getDbInstance() async {
-    _db = await DbConfig().getInstance(tableName: ProvinceTable);
+    _db = await DbConfig().getInstance(query: ProvinceTable().getInstance());
     return;
   }
 
-  Future<int> insert(ProvinceTable todo) async {
-    int id = await _db!.insert(ProvinceTable.tableName, todo.toJson());
-    return id;
+  Future<void> insert(List<ProvinceTable> todo) async {
+    _db!.transaction((txn) async {
+      var batch = txn.batch();
+      todo.forEach((element) {
+        batch.insert(ProvinceTable.tableName, element.toJson());
+      });
+      await batch.commit(noResult: true);
+    });
+    // int id = await _db!.insert(ProvinceTable.tableName, todo.toJson());
+    return;
   }
 
   Future<List<ProvinceTable>> getAllProvinces() async {

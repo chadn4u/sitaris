@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/user/homeController.dart';
 import 'package:sitaris/feature/presentation/user/createOrder.dart';
 import 'package:sitaris/feature/presentation/user/profile.dart';
+import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/customBottomNavigation.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textField.dart';
 import 'package:sitaris/utils/textType.dart';
+import 'package:sitaris/utils/utils.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({Key? key}) : super(key: key);
@@ -129,10 +131,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               .map((e) => Expanded(
                                     child: InkWell(
                                       onTap: () {
-                                        if (e!.prodId == "0") {
+                                        if (e.prodId == "0") {
                                           controller.openBottomSheet();
                                         }
-                                        // _pageController!.jumpToPage(4);
+                                        Utils.navigateTo(
+                                            name: AppRoutes.USERCREATEORDER,
+                                            args: {"data": e});
                                       },
                                       child: CategoryWidget(
                                         iconData:
@@ -193,8 +197,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           const Center(
             child: FxText.titleMedium("Item 3", fontWeight: 600),
           ),
-          const UserProfile(),
-          const CreateOrderScreen()
+          const UserProfile()
         ],
       ),
       bottomNavigationBar: CustomBottomNavigation(
@@ -386,7 +389,10 @@ class CategoryWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: FxText.labelMedium(actionText,
-                fontWeight: 600, letterSpacing: 0, textAlign: TextAlign.center),
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: 0,
+                textAlign: TextAlign.center),
           )
         ],
       ),

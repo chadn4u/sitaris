@@ -1,4 +1,6 @@
-class ProvinceTable {
+import 'package:sitaris/base/baseSqliteDB.dart';
+
+class ProvinceTable with BaseSqliteDB {
   static final String tableName = 'mst_province';
   static final String columnCode = 'province_code';
   static final String columnName = 'province_name';
@@ -22,10 +24,20 @@ class ProvinceTable {
     provinceName = json[columnName];
   }
 
-  static String create() {
+  BaseSqliteDB getInstance() {
+    return this;
+  }
+
+  @override
+  String create() {
     return "CREATE TABLE $tableName (" +
         "$columnCode TEXT PRIMARY KEY ," +
         "$columnName TEXT" +
         ")";
+  }
+
+  @override
+  String tableNames() {
+    return tableName;
   }
 }

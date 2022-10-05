@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:sitaris/core/sqlite/province/province.dart';
+import 'package:sitaris/base/baseSqliteDB.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class DbConfig {
   Database? _db;
 
-  Future<Database> getInstance({dynamic tableName}) async {
+  Future<Database> getInstance({BaseSqliteDB? query}) async {
     if (_db == null) {
-      _db = await openDatabase('sitaris.db', version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute(ProvinceTable.create());
-      });
+      _db = await openDatabase(join(await getDatabasesPath(), "sitaris.db"),
+          version: 2, onCreate: (Database db, int version) async {
+        await db.execute(query!.create());
+      }, singleInstance: false);
     }
-    debugPrint("db nya ");
+    var result = await _db!.query('sqlite_master',
+        where: 'name = ?', whereArgs: [query!.tableNames()]);
+    if (result.isEmpty) {
+      _db!.execute(query.create());
+    }
 
     return _db!;
   }

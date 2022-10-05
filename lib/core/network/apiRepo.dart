@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/core/network/rest_client.dart';
 import 'package:sitaris/feature/model/city/city.dart';
+import 'package:sitaris/feature/model/config/config.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
 import 'package:sitaris/feature/model/login/login.dart';
@@ -51,10 +52,9 @@ class ApiRepository {
     return BaseResponseProduct.fromJson(result);
   }
 
-  Future<BaseResponseKelurahan> getKelurahan(
-      {Map<String, dynamic>? data}) async {
+  Future<BaseResponseKelurahan> getKelurahan(String kecCode) async {
     final result = await restClient.request(
-        "${BASE_URL}listkelurahan/all", Method.GET, data,
+        "${BASE_URL}listkelurahan/${kecCode}", Method.GET, {},
         opt: Options(
           headers: {
             'requirestoken': true,
@@ -65,10 +65,9 @@ class ApiRepository {
     return BaseResponseKelurahan.fromJson(result);
   }
 
-  Future<BaseResponseKecamatan> getKecamatan(
-      {Map<String, dynamic>? data}) async {
+  Future<BaseResponseKecamatan> getKecamatan(String cityCode) async {
     final result = await restClient.request(
-        "${BASE_URL}listkecamatan/all", Method.GET, data,
+        "${BASE_URL}listkecamatan/${cityCode}", Method.GET, {},
         opt: Options(
           headers: {
             'requirestoken': true,
@@ -79,14 +78,14 @@ class ApiRepository {
     return BaseResponseKecamatan.fromJson(result);
   }
 
-  Future<BaseResponseCity> getCity({Map<String, dynamic>? data}) async {
-    final result =
-        await restClient.request("${BASE_URL}listcity/all", Method.GET, data,
-            opt: Options(
-              headers: {
-                'requirestoken': true,
-              },
-            ));
+  Future<BaseResponseCity> getCity(String provCode) async {
+    final result = await restClient.request(
+        "${BASE_URL}listcity/${provCode}", Method.GET, {},
+        opt: Options(
+          headers: {
+            'requirestoken': true,
+          },
+        ));
     restClient.close();
 
     return BaseResponseCity.fromJson(result);
@@ -103,5 +102,18 @@ class ApiRepository {
     restClient.close();
 
     return BaseResponseProvince.fromJson(result);
+  }
+
+  Future<BaseResponseConfig> postConfig({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}config", Method.POST, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseConfig.fromJson(result);
   }
 }
