@@ -1,12 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/city/city.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
+import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
+import 'package:sitaris/utils/spacing.dart';
+import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textType.dart';
 import 'package:sitaris/utils/utils.dart';
 
@@ -16,6 +21,7 @@ class CreateOrderController extends BaseController {
   late TextEditingController namaController;
   late TextEditingController addressController;
   late PageController pageController;
+  RxList<FileTypeModel?> fileType = RxList();
   DateTime? currentBackPressTime;
 
   RxString valueProv = "".obs;
@@ -226,5 +232,196 @@ class CreateOrderController extends BaseController {
       keyboardType: TextInputType.emailAddress,
       textCapitalization: TextCapitalization.sentences,
     );
+  }
+
+  Widget contactInfoWidget(
+      {required String type,
+      required String label,
+      String? valueDropDown,
+      Function(String?)? onChangeDropDown,
+      List<DropdownMenuItem<String>>? item}) {
+    switch (type) {
+      case "TextBox":
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Container(
+                margin: FxSpacing.fromLTRB(10, 0, 0, 0),
+                width: MediaQuery.of(Get.context!).size.width * 0.2,
+                child: FxText.bodySmall(label,
+                    fontWeight: 700, muted: true, color: Colors.black),
+              ),
+              Expanded(
+                child: textBox(
+                    controller: namaController,
+                    hint: label,
+                    icon: Icons.people),
+              )
+            ],
+          ),
+        );
+      case "DropDown":
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Container(
+                margin: FxSpacing.fromLTRB(10, 0, 0, 0),
+                width: MediaQuery.of(Get.context!).size.width * 0.2,
+                child: FxText.bodySmall(label,
+                    fontWeight: 700, muted: true, color: Colors.black),
+              ),
+              Expanded(
+                child: InputDecorator(
+                  // isEmpty: getXHome.choiceSelected.value == '',
+                  decoration: InputDecoration(
+                    hintText: 'Pilih $label',
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14.0, horizontal: 14.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                          value: valueDropDown,
+                          isDense: true,
+                          onChanged: onChangeDropDown,
+                          items: item)),
+                ),
+              )
+            ],
+          ),
+        );
+      case "TextArea":
+        return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Container(
+                  margin: FxSpacing.fromLTRB(10, 0, 0, 0),
+                  width: MediaQuery.of(Get.context!).size.width * 0.2,
+                  child: FxText.bodySmall(label,
+                      fontWeight: 700, muted: true, color: Colors.black),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: addressController,
+                    decoration: InputDecoration(
+                        hintText: "Input $label anda",
+                        isDense: true,
+                        filled: true,
+                        fillColor: theme.colorScheme.background,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14.0, horizontal: 14.0),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.primary,
+                            width: 1.0,
+                          ),
+                        )),
+                    textCapitalization: TextCapitalization.sentences,
+                    minLines: 5,
+                    maxLines: 10,
+                  ),
+                ),
+              ],
+            ));
+      default:
+        return Container();
+    }
+  }
+
+  void openBottomSheet({required String label}) {
+    final ImagePicker _picker = ImagePicker();
+
+    Get.bottomSheet(
+        Container(
+            padding: const EdgeInsets.all(8.0),
+            height: MediaQuery.of(Get.context!).size.height * 0.15,
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () async {
+                    // Pick an image
+                    final XFile? image =
+                        await _picker.pickImage(source: ImageSource.gallery);
+                    Uint8List byteImage = await image!.readAsBytes();
+                    fileType
+                        .firstWhere((element) => element!.label == label)!
+                        .data!
+                        .add({"id": image.hashCode, "value": byteImage});
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FxText.bodyLarge("Browse Image",
+                            letterSpacing: 0.3,
+                            fontWeight: 600,
+                            color: Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    final XFile? image =
+                        await _picker.pickImage(source: ImageSource.camera);
+                    Uint8List byteImage = await image!.readAsBytes();
+                    fileType
+                        .firstWhere((element) => element!.label == label)!
+                        .data!
+                        .add({"id": image.name, "value": byteImage});
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.camera,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FxText.bodyLarge("Camera",
+                            letterSpacing: 0.3,
+                            fontWeight: 600,
+                            color: Colors.black),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            )),
+        elevation: 2.0,
+        backgroundColor: theme.backgroundColor,
+        barrierColor: Colors.grey.withOpacity(0.2));
   }
 }

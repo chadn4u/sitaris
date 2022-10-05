@@ -1,14 +1,16 @@
 // ignore_for_file: file_names
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/user/createOrderController.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/utils/container.dart';
+import 'package:sitaris/utils/fxCard.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
-import 'package:sitaris/utils/utils.dart';
 
 import '../../controller/user/homeController.dart';
 
@@ -31,6 +33,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     controller = Get.find<HomeController>();
     createOrderController = Get.put(CreateOrderController());
     data = Get.arguments["data"];
+    createOrderController.fileType.addAll(data!.files);
     // customTheme = AppTheme.customTheme;
   }
 
@@ -75,365 +78,88 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           ),
                           Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: const FxText.bodySmall("Nama",
-                                          fontWeight: 700,
-                                          muted: true,
-                                          color: Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: createOrderController.textBox(
-                                          controller: createOrderController
-                                              .namaController,
-                                          hint: "Nama",
-                                          icon: Icons.people),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: const FxText.bodySmall("Provinsi",
-                                          fontWeight: 700,
-                                          muted: true,
-                                          color: Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: InputDecorator(
-                                        // isEmpty: getXHome.choiceSelected.value == '',
-                                        decoration: InputDecoration(
-                                          hintText: 'Pilih Provinsi',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 14.0,
-                                                  horizontal: 14.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: createOrderController
-                                                    .valueProv.value,
-                                                isDense: true,
-                                                onChanged: (value) {
-                                                  createOrderController
-                                                      .valueProv.value = value!;
+                              createOrderController.contactInfoWidget(
+                                  label: "Nama", type: "TextBox"),
+                              createOrderController.contactInfoWidget(
+                                  label: "Provinsi",
+                                  type: "DropDown",
+                                  valueDropDown:
+                                      createOrderController.valueProv.value,
+                                  item: createOrderController.selectedProvince
+                                      .map((e) => DropdownMenuItem<String>(
+                                          value: e!.provinceCode,
+                                          child: FxText.bodySmall(
+                                              e.provinceName!,
+                                              fontWeight: 700,
+                                              muted: true,
+                                              color: Colors.black)))
+                                      .toList(),
+                                  onChangeDropDown: (value) {
+                                    createOrderController.valueProv.value =
+                                        value!;
 
-                                                  createOrderController
-                                                      .getCity(value);
-                                                  createOrderController
-                                                      .resetOther("Province");
-                                                },
-                                                items: createOrderController
-                                                    .selectedProvince
-                                                    .map((e) => DropdownMenuItem<
-                                                            String>(
-                                                        value: e!.provinceCode,
-                                                        child: FxText.bodySmall(
-                                                            e.provinceName!,
-                                                            fontWeight: 700,
-                                                            muted: true,
-                                                            color:
-                                                                Colors.black)))
-                                                    .toList())),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: const FxText.bodySmall("Kota",
-                                          fontWeight: 700,
-                                          muted: true,
-                                          color: Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: InputDecorator(
-                                        // isEmpty: getXHome.choiceSelected.value == '',
-                                        decoration: InputDecoration(
-                                          hintText: 'Pilih Kota',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 14.0,
-                                                  horizontal: 14.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: createOrderController
-                                                    .valueCity.value,
-                                                isDense: true,
-                                                onChanged: (value) {
-                                                  createOrderController
-                                                      .valueCity.value = value!;
+                                    createOrderController.getCity(value);
+                                    createOrderController
+                                        .resetOther("Province");
+                                  }),
+                              createOrderController.contactInfoWidget(
+                                  label: "Kota",
+                                  type: "DropDown",
+                                  valueDropDown:
+                                      createOrderController.valueCity.value,
+                                  item: createOrderController.selectedCity
+                                      .map((e) => DropdownMenuItem<String>(
+                                          value: e!.cityCode,
+                                          child: FxText.bodySmall(e.city!,
+                                              fontWeight: 700,
+                                              muted: true,
+                                              color: Colors.black)))
+                                      .toList(),
+                                  onChangeDropDown: (value) {
+                                    createOrderController.valueCity.value =
+                                        value!;
 
-                                                  createOrderController
-                                                      .getKecamatan(value);
-                                                  createOrderController
-                                                      .resetOther("City");
-                                                },
-                                                items: createOrderController
-                                                    .selectedCity
-                                                    .map((e) => DropdownMenuItem<
-                                                            String>(
-                                                        value: e!.cityCode,
-                                                        child: FxText.bodySmall(
-                                                            e.city!,
-                                                            fontSize: 10,
-                                                            fontWeight: 700,
-                                                            muted: true,
-                                                            color:
-                                                                Colors.black)))
-                                                    .toList())),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: const FxText.bodySmall("Kecamatan",
-                                          fontWeight: 700,
-                                          muted: true,
-                                          color: Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: InputDecorator(
-                                        // isEmpty: getXHome.choiceSelected.value == '',
-                                        decoration: InputDecoration(
-                                          hintText: 'Pilih Kecamatan',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 14.0,
-                                                  horizontal: 14.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: createOrderController
-                                                    .valueKec.value,
-                                                isDense: true,
-                                                onChanged: (value) {
-                                                  createOrderController
-                                                      .valueKec.value = value!;
+                                    createOrderController.getKecamatan(value);
+                                    createOrderController.resetOther("City");
+                                  }),
+                              createOrderController.contactInfoWidget(
+                                  label: "Kecamatan",
+                                  type: "DropDown",
+                                  valueDropDown:
+                                      createOrderController.valueKec.value,
+                                  item: createOrderController.selectedKec
+                                      .map((e) => DropdownMenuItem<String>(
+                                          value: e!.kecamatanCode,
+                                          child: FxText.bodySmall(e.kecamatan!,
+                                              fontWeight: 700,
+                                              muted: true,
+                                              color: Colors.black)))
+                                      .toList(),
+                                  onChangeDropDown: (value) {
+                                    createOrderController.valueKec.value =
+                                        value!;
 
-                                                  createOrderController
-                                                      .getKelurahan(value);
-                                                },
-                                                items: createOrderController
-                                                    .selectedKec
-                                                    .map((e) => DropdownMenuItem<
-                                                            String>(
-                                                        value: e!.kecamatanCode,
-                                                        child: FxText.bodySmall(
-                                                            e.kecamatan!,
-                                                            fontSize: 10,
-                                                            fontWeight: 700,
-                                                            muted: true,
-                                                            color:
-                                                                Colors.black)))
-                                                    .toList())),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      child: const FxText.bodySmall("Kelurahan",
-                                          fontWeight: 700,
-                                          muted: true,
-                                          color: Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: InputDecorator(
-                                        // isEmpty: getXHome.choiceSelected.value == '',
-                                        decoration: InputDecoration(
-                                          hintText: 'Pilih Kelurahan',
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 14.0,
-                                                  horizontal: 14.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            borderSide: BorderSide(
-                                              color: createOrderController
-                                                  .theme.colorScheme.primary,
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                                value: createOrderController
-                                                    .valueKel.value,
-                                                isDense: true,
-                                                onChanged: (value) {
-                                                  createOrderController
-                                                      .valueKel.value = value!;
-                                                },
-                                                items: createOrderController
-                                                    .selectedKel
-                                                    .map((e) => DropdownMenuItem<
-                                                            String>(
-                                                        value: e!.kelurahanCode,
-                                                        child: FxText.bodySmall(
-                                                            e.kelurahan!,
-                                                            fontWeight: 700,
-                                                            muted: true,
-                                                            color:
-                                                                Colors.black)))
-                                                    .toList())),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.2,
-                                        child: const FxText.bodySmall("Alamat",
-                                            fontWeight: 700,
-                                            muted: true,
-                                            color: Colors.black),
-                                      ),
-                                      Expanded(
-                                        child: TextFormField(
-                                          controller: createOrderController
-                                              .addressController,
-                                          decoration: InputDecoration(
-                                              hintText: "Input alamat anda",
-                                              isDense: true,
-                                              filled: true,
-                                              fillColor: createOrderController
-                                                  .theme.colorScheme.background,
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 14.0,
-                                                      horizontal: 14.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                                borderSide: BorderSide(
-                                                  color: createOrderController
-                                                      .theme
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                                borderSide: BorderSide(
-                                                  color: createOrderController
-                                                      .theme
-                                                      .colorScheme
-                                                      .primary,
-                                                  width: 1.0,
-                                                ),
-                                              )),
-                                          textCapitalization:
-                                              TextCapitalization.sentences,
-                                          minLines: 5,
-                                          maxLines: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
+                                    createOrderController.getKelurahan(value);
+                                  }),
+                              createOrderController.contactInfoWidget(
+                                  label: "Kelurahan",
+                                  type: "DropDown",
+                                  valueDropDown:
+                                      createOrderController.valueKel.value,
+                                  item: createOrderController.selectedKel
+                                      .map((e) => DropdownMenuItem<String>(
+                                          value: e!.kelurahanCode,
+                                          child: FxText.bodySmall(e.kelurahan!,
+                                              fontWeight: 700,
+                                              muted: true,
+                                              color: Colors.black)))
+                                      .toList(),
+                                  onChangeDropDown: (value) {
+                                    createOrderController.valueKel.value =
+                                        value!;
+                                  }),
+                              createOrderController.contactInfoWidget(
+                                  type: "TextArea", label: "Alamat"),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
@@ -487,107 +213,171 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                   ],
                 ),
               ),
-              ListView(
-                padding: FxSpacing.zero,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: FxSpacing.fromLTRB(10, 0, 0, 12),
-                          child: const FxText.bodyLarge("Upload Berkas",
-                              fontWeight: 700,
-                              muted: true,
-                              color: Colors.black),
-                        ),
-                        Column(
-                          children: [
-                            ...data!.files
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin:
-                                                FxSpacing.fromLTRB(10, 0, 0, 0),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.2,
-                                            child: FxText.bodySmall(e!.label!,
-                                                fontWeight: 700,
-                                                muted: true,
-                                                color: Colors.black),
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.25,
+              Obx(
+                () => ListView(
+                  padding: FxSpacing.zero,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin: FxSpacing.fromLTRB(10, 0, 0, 12),
+                            child: const FxText.bodyLarge("Upload Berkas",
+                                fontWeight: 700,
+                                muted: true,
+                                color: Colors.black),
+                          ),
+                          Column(
+                            children: [
+                              ...createOrderController.fileType
+                                  .map((es) => Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: FxSpacing.fromLTRB(
+                                                  10, 0, 0, 0),
                                               width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              color: const Color(0xfff0f0f0),
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              child: FxText.bodySmall(
+                                                  es!.label!,
+                                                  fontWeight: 700,
+                                                  muted: true,
+                                                  color: Colors.black),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ))
-                                .toList(),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 24),
-                                    child: ElevatedButton(
-                                      style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(
-                                              FxSpacing.xy(16, 0))),
-                                      onPressed: () {},
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          const Icon(
-                                            FeatherIcons.logOut,
-                                            color: Colors.white,
-                                            size: 18,
-                                          ),
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 16),
-                                            child: const FxText.bodySmall(
-                                                "Next",
-                                                letterSpacing: 0.3,
-                                                fontWeight: 600,
-                                                color: Colors.white),
-                                          ),
-                                        ],
+                                            Expanded(
+                                              child: Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.25,
+                                                  color:
+                                                      const Color(0xfff0f0f0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: GridView.count(
+                                                    shrinkWrap: true,
+                                                    crossAxisCount: 3,
+                                                    childAspectRatio: 80 / 90,
+                                                    mainAxisSpacing: 2.0,
+                                                    crossAxisSpacing: 10.0,
+                                                    children: [
+                                                      ...es.data!
+                                                          .map(
+                                                            (element) =>
+                                                                Container(
+                                                              child: Stack(
+                                                                children: [
+                                                                  Image.memory(
+                                                                    element[
+                                                                        "value"],
+                                                                    height: 120,
+                                                                    width: 120,
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                  ),
+                                                                  Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topRight,
+                                                                    child:
+                                                                        InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        createOrderController
+                                                                            .fileType
+                                                                            .firstWhere((elements) =>
+                                                                                elements!.label ==
+                                                                                es.label)!
+                                                                            .data!
+                                                                            .removeWhere((elemento) => elemento["id"] == element["id"]);
+                                                                      },
+                                                                      child: Icon(
+                                                                          Icons
+                                                                              .close),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )
+                                                          .toList(),
+                                                      InkWell(
+                                                        onTap: (() =>
+                                                            createOrderController
+                                                                .openBottomSheet(
+                                                                    label: es
+                                                                        .label!)),
+                                                        child: FxCard.bordered(
+                                                          height: 60,
+                                                          width: 60,
+                                                          child:
+                                                              Icon(Icons.add),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )),
+                                            )
+                                          ],
+                                        ),
+                                      ))
+                                  .toList(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 24),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                FxSpacing.xy(16, 0))),
+                                        onPressed: () {},
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            const Icon(
+                                              FeatherIcons.logOut,
+                                              color: Colors.white,
+                                              size: 18,
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 16),
+                                              child: const FxText.bodySmall(
+                                                  "Next",
+                                                  letterSpacing: 0.3,
+                                                  fontWeight: 600,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
 
-                        // singleTask(
-                        //     subject: "Mathematics",
-                        //     task: "Example 2",
-                        //     statusText: "Not submit",
-                        //     status: 1,
-                        //     submissionDate: "22/07/20"),
-                      ],
-                    ),
-                  )
-                ],
+                          // singleTask(
+                          //     subject: "Mathematics",
+                          //     task: "Example 2",
+                          //     statusText: "Not submit",
+                          //     status: 1,
+                          //     submissionDate: "22/07/20"),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               )
             ],
           )),

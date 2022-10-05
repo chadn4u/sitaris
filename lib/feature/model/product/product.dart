@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class ProductModel {
   late String? prodId;
   late String? prodNm;
@@ -19,6 +21,8 @@ class ProductModel {
 class FileTypeModel {
   late String? label;
   late String? type;
+
+  RxList<Map<String, dynamic>>? data = RxList();
 
   FileTypeModel({this.label, this.type});
 

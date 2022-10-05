@@ -44,6 +44,7 @@ dependencies:
   flutter_feather_icons: ^2.0.0+1
   lottie: ^1.4.1
   sqflite: ^2.1.0
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:

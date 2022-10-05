@@ -100,8 +100,10 @@ class HomeController extends BaseController {
               ...listDataProduct
                   .map((e) => InkWell(
                         onTap: () {
-                          pageController!.jumpToPage(4);
                           Get.back();
+                          Utils.navigateTo(
+                              name: AppRoutes.USERCREATEORDER,
+                              args: {"data": e});
                         },
                         child: CategoryWidget(
                           iconData: getIcon(e!.prodId!),
