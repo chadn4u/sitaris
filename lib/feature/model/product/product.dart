@@ -16,20 +16,31 @@ class ProductModel {
             : FileTypeModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+  Map<String, dynamic> toJson() =>
+      {"prod_id": prodId, "prod_nm": prodNm, "files": files};
 }
 
 class FileTypeModel {
   late String? label;
   late String? type;
+  late int? limit;
 
   RxList<Map<String, dynamic>>? data = RxList();
 
-  FileTypeModel({this.label, this.type});
+  FileTypeModel({this.label, this.type, this.limit});
 
   FileTypeModel.fromJson(Map<String, dynamic> json) {
     label = json['label'];
     type = json['prod_nm'];
+    limit = json['limit'];
   }
+  Map<String, dynamic> toJson() => {
+        "label": label,
+        "type": type,
+        "files": (data as List)
+            .map((e) => e == null ? null : {"id": e["id"], "value": e["value"]})
+            .toList()
+      };
 }
 
 class BaseResponseProduct {

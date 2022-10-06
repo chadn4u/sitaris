@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -34,6 +34,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     createOrderController = Get.put(CreateOrderController());
     data = Get.arguments["data"];
     createOrderController.fileType.addAll(data!.files);
+    createOrderController.dataProduct = data!;
     // customTheme = AppTheme.customTheme;
   }
 
@@ -41,6 +42,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   void dispose() {
     super.dispose();
     createOrderController.dispose();
+    Get.delete<CreateOrderController>();
   }
 
   @override
@@ -275,8 +277,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                                               child: Stack(
                                                                 children: [
                                                                   Image.memory(
-                                                                    element[
-                                                                        "value"],
+                                                                    base64Decode(
+                                                                        element[
+                                                                            "value"]),
                                                                     height: 120,
                                                                     width: 120,
                                                                     fit: BoxFit
@@ -308,19 +311,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                                             ),
                                                           )
                                                           .toList(),
-                                                      InkWell(
-                                                        onTap: (() =>
-                                                            createOrderController
-                                                                .openBottomSheet(
-                                                                    label: es
-                                                                        .label!)),
-                                                        child: FxCard.bordered(
-                                                          height: 60,
-                                                          width: 60,
-                                                          child:
-                                                              Icon(Icons.add),
-                                                        ),
-                                                      ),
+                                                      (es.limit! >
+                                                              es.data!.length)
+                                                          ? InkWell(
+                                                              onTap: (() => createOrderController
+                                                                  .openBottomSheet(
+                                                                      label: es
+                                                                          .label!)),
+                                                              child: FxCard
+                                                                  .bordered(
+                                                                height: 60,
+                                                                width: 60,
+                                                                child: Icon(
+                                                                    Icons.add),
+                                                              ),
+                                                            )
+                                                          : Container(),
                                                     ],
                                                   )),
                                             )
@@ -336,30 +342,51 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                     Container(
                                       margin: const EdgeInsets.only(top: 24),
                                       child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
-                                                FxSpacing.xy(16, 0))),
-                                        onPressed: () {},
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            const Icon(
-                                              FeatherIcons.logOut,
-                                              color: Colors.white,
-                                              size: 18,
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 16),
-                                              child: const FxText.bodySmall(
-                                                  "Next",
-                                                  letterSpacing: 0.3,
-                                                  fontWeight: 600,
-                                                  color: Colors.white),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                          style: ButtonStyle(
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      FxSpacing.xy(16, 0))),
+                                          onPressed: () {
+                                            // createOrderController.process
+                                            //     .value = ProcessEnum.finish;
+                                            if (createOrderController
+                                                    .process.value ==
+                                                ProcessEnum.finish) {
+                                              createOrderController
+                                                  .submitOrder();
+                                            }
+                                          },
+                                          child: (createOrderController
+                                                      .process.value ==
+                                                  ProcessEnum.loading)
+                                              ? Transform.scale(
+                                                  scale: 0.5,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                              : Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    const Icon(
+                                                      FeatherIcons.logOut,
+                                                      color: Colors.white,
+                                                      size: 18,
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 16),
+                                                      child: const FxText
+                                                              .bodySmall("Next",
+                                                          letterSpacing: 0.3,
+                                                          fontWeight: 600,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ],
+                                                )),
                                     ),
                                   ],
                                 ),

@@ -14,10 +14,10 @@ class DioLoggingInterceptors extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     // print(options.data);
-    // if (options.queryParameters != null) {
-    //   // print("queryParameters:");
-    //   options.queryParameters.forEach((k, v) => print('$k: $v'));
-    // }
+    if (options.data != null) {
+      // print("queryParameters:");
+      options.data.forEach((k, v) => print('$k: $v'));
+    }
     if (options.data != null) {}
 
     if (options.headers.containsKey('requirestoken')) {
@@ -56,6 +56,7 @@ class DioLoggingInterceptors extends Interceptor {
         debugPrint('test interceptor');
         int responseCode = err.response!.statusCode!;
         if (responseCode == 401) {
+          debugPrint('test interceptor 401');
           _dio.interceptors.requestLock.lock();
           _dio.interceptors.responseLock.lock();
           _dio.interceptors.errorLock.lock();
@@ -83,10 +84,10 @@ class DioLoggingInterceptors extends Interceptor {
           options.headers
               .update("Authorization", (value) => "Bearer $newAccessToken");
 
-          _dio
-              .fetch(options)
-              .then((value) => handler.resolve(value))
-              .onError((error, stackTrace) => handler.reject(err));
+          _dio.fetch(options).then((value) {
+            debugPrint('busett dahh');
+            return handler.resolve(value);
+          }).onError((error, stackTrace) => handler.reject(err));
           // return handler.next(err);
         } else {
           return handler.next(err);

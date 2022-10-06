@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
@@ -102,28 +104,28 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         },
         children: <Widget>[
           /*-------------- Build tab content here -----------------*/
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-                child: Container(
+          Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0.8,
-                          blurRadius: 1,
-                          offset:
-                              const Offset(1, 1), // changes position of shadow
-                        ),
-                      ],
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10.0)),
-                      color: theme.scaffoldBackgroundColor),
-                  child: Obx(
-                    () => Row(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0.8,
+                            blurRadius: 1,
+                            offset: const Offset(
+                                1, 1), // changes position of shadow
+                          ),
+                        ],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10.0)),
+                        color: theme.scaffoldBackgroundColor),
+                    child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ...controller.listMenu
@@ -134,8 +136,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                           return controller.openBottomSheet();
                                         }
                                         Utils.navigateTo(
-                                            name: AppRoutes.USERCREATEORDER,
-                                            args: {"data": e});
+                                                name: AppRoutes.USERCREATEORDER,
+                                                args: {"data": e})!
+                                            .then((value) =>
+                                                controller.getOrder());
                                       },
                                       child: CategoryWidget(
                                         iconData:
@@ -167,28 +171,45 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         ),
                   ),
                 ),
-              ),
-              // Expanded(
-              //   child: Center(
-              //     child: noData(),
-              //   ),
-              // )
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-                child: FxText.titleSmall("Order Anda...", fontWeight: 600),
-              ),
-
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) => singleWorker(
-                      name: 'Chad',
-                      profession: 'Programmer',
-                      status: 'Permanent'),
-                ),
-              )
-            ],
+                // Expanded(
+                //   child: Center(
+                //     child: noData(),
+                //   ),
+                // )
+                (controller.orderMasterModel.value.length > 0)
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
+                        child:
+                            FxText.titleSmall("Order Anda...", fontWeight: 600),
+                      )
+                    : Container(),
+                (controller.orderMasterModel.value.length > 0)
+                    ? Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: controller.getOrder,
+                          child: ListView.builder(
+                            itemCount: controller.orderMasterModel.value.length,
+                            itemBuilder: (context, index) => singleWorker(
+                                name: controller
+                                    .orderMasterModel[index]!.orderId!,
+                                totalProduct: controller
+                                    .orderMasterModel[index]!
+                                    .orderDetail!
+                                    .length
+                                    .toString(),
+                                status: controller
+                                    .orderMasterModel[index]!.statusNm!),
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: Center(
+                          child: noData(),
+                        ),
+                      ),
+              ],
+            ),
           ),
           const Center(
             child: FxText.titleMedium("Item 2", fontWeight: 600),
@@ -275,7 +296,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Widget singleWorker(
       {required String name,
-      required String profession,
+      required String totalProduct,
       double? perHour,
       double? rate,
       required String status,
@@ -329,12 +350,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       fontWeight: 600,
                     ),
                     FxText.bodyMedium(
-                      profession,
+                      "Total Products : ($totalProduct)",
                       color: theme.colorScheme.onBackground,
                       fontWeight: 600,
                     ),
                     FxText.bodyMedium(
-                      "Progress: Pengecekan Berkas",
+                      "Status: $status",
                       color: theme.colorScheme.onBackground,
                       fontWeight: 600,
                     ),

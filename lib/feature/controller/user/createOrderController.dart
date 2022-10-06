@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
+import 'package:sitaris/feature/model/baseResponse/baseResponse.dart';
 import 'package:sitaris/feature/model/city/city.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
+import 'package:sitaris/feature/model/orderPreset/orderPreset.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
 import 'package:sitaris/utils/spacing.dart';
@@ -15,12 +20,20 @@ import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textType.dart';
 import 'package:sitaris/utils/utils.dart';
 
+enum ProcessEnum { loading, finish }
+
 class CreateOrderController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
   late TextEditingController namaController;
   late TextEditingController addressController;
   late PageController pageController;
+  late ProductModel dataProduct;
+  late String orderNo;
+
+  Rx<ProcessEnum> process = ProcessEnum.finish.obs;
+
+  final f = new DateFormat('yyyyMMdd');
   RxList<FileTypeModel?> fileType = RxList();
   DateTime? currentBackPressTime;
 
@@ -47,10 +60,15 @@ class CreateOrderController extends BaseController {
     addressController = TextEditingController();
     pageController = PageController(initialPage: 0);
     getProvince();
-
-    debugPrint(sessionController.name!.value);
+    getOrderId();
 
     theme = themeController.getTheme();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    Get.delete<CreateOrderController>();
   }
 
   void validate() {
@@ -158,6 +176,21 @@ class CreateOrderController extends BaseController {
     }
   }
 
+  Future<void> getOrderId() async {
+    try {
+      BaseResponseOrderPreset result = await _apiRepository.postOrderId();
+      if (result.status!) {
+        orderNo = result.data!.orderNo!;
+      } else {
+        throw result.message!;
+      }
+
+      return;
+    } catch (e) {
+      Utils.showSnackBar(text: e.toString());
+    }
+  }
+
   void resetOther(String type) {
     switch (type) {
       case "Province":
@@ -176,6 +209,62 @@ class CreateOrderController extends BaseController {
       default:
         break;
     }
+  }
+
+  void submitOrder() async {
+    changeStateBtnOrder();
+    try {
+      fileType.forEach((element) {
+        if (element!.data!.length == 0) {
+          throw "Dokumen ${element.label} masih kosong";
+        }
+      });
+    } catch (es) {
+      changeStateBtnOrder();
+      return Utils.showSnackBar(text: es.toString());
+    }
+    // List<FileTypeModel?> dataForSent = fileType;
+    // dataForSent.forEach((element) {
+    //   element!.data["value"] = base64Encode(element!.data["value"]);
+    // });
+    Map<String, dynamic> _dataForPost = {
+      "order_no": orderNo, //ambil dari hit API
+      "order_dt": f.format(DateTime.now()).toString(),
+      "bank_id": sessionController.bankId!.value,
+      "cust_nm": sessionController.name!.value,
+      "cust_addr": addressController.text,
+      "cust_kel": valueKel.value,
+      "cust_kodepos": selectedKel
+          .firstWhere((element) => (element!.kelurahanCode == valueKel.value))!
+          .postalCode,
+      "create_by": sessionController.id!.value,
+      "products": [
+        {
+          "prod_id": dataProduct.prodId,
+          "prod_nm": dataProduct.prodNm,
+          "files": jsonEncode(fileType)
+        }
+      ]
+    };
+    try {
+      BaseResponse result = await _apiRepository.postOrder(data: _dataForPost);
+      if (result.status!) {
+        Utils.showSnackBar(text: result.message!);
+        changeStateBtnOrder();
+        Future.delayed(Duration(seconds: 3), () {
+          Get.back(closeOverlays: true);
+        });
+      } else {
+        throw result.message!;
+      }
+
+      return;
+    } catch (e) {
+      changeStateBtnOrder();
+      Utils.showSnackBar(text: e.toString());
+    }
+    // debugPrint(_dataForPost.toString());
+    // _apiRepo
   }
 
   Widget textBox(
@@ -232,6 +321,14 @@ class CreateOrderController extends BaseController {
       keyboardType: TextInputType.emailAddress,
       textCapitalization: TextCapitalization.sentences,
     );
+  }
+
+  void changeStateBtnOrder() {
+    if (process.value == ProcessEnum.finish) {
+      process.value = ProcessEnum.loading;
+    } else {
+      process.value = ProcessEnum.finish;
+    }
   }
 
   Widget contactInfoWidget(
@@ -368,7 +465,11 @@ class CreateOrderController extends BaseController {
                     fileType
                         .firstWhere((element) => element!.label == label)!
                         .data!
-                        .add({"id": image.hashCode, "value": byteImage});
+                        .add({
+                      "id": image.hashCode,
+                      "value": base64Encode(byteImage)
+                    });
+                    Get.back();
                   },
                   child: Row(
                     children: [
@@ -394,10 +495,15 @@ class CreateOrderController extends BaseController {
                     final XFile? image =
                         await _picker.pickImage(source: ImageSource.camera);
                     Uint8List byteImage = await image!.readAsBytes();
+                    // debugPrint(byteImage.toString());
                     fileType
                         .firstWhere((element) => element!.label == label)!
                         .data!
-                        .add({"id": image.name, "value": byteImage});
+                        .add({
+                      "id": image.name,
+                      "value": base64Encode(byteImage)
+                    });
+                    Get.back();
                   },
                   child: Row(
                     children: [

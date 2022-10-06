@@ -2,11 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/core/network/rest_client.dart';
+import 'package:sitaris/feature/model/baseResponse/baseResponse.dart';
 import 'package:sitaris/feature/model/city/city.dart';
 import 'package:sitaris/feature/model/config/config.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
 import 'package:sitaris/feature/model/login/login.dart';
+import 'package:sitaris/feature/model/order/order.dart';
+import 'package:sitaris/feature/model/orderPreset/orderPreset.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
 import 'package:sitaris/feature/model/token/token.dart';
@@ -115,5 +118,44 @@ class ApiRepository {
     restClient.close();
 
     return BaseResponseConfig.fromJson(result);
+  }
+
+  Future<BaseResponse> postOrder({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}addorder", Method.POST, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponse.fromJson(result);
+  }
+
+  Future<BaseResponseOrderPreset> postOrderId() async {
+    final result =
+        await restClient.request("${BASE_URL}presetord", Method.GET, {},
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseOrderPreset.fromJson(result);
+  }
+
+  Future<BaseResponseOrder> getOrderById({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}vieworder/list", Method.GET, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseOrder.fromJson(result);
   }
 }

@@ -53,8 +53,11 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 8),
-                      child: const FxText.titleMedium("Derrick Malone",
-                          fontWeight: 600, letterSpacing: 0),
+                      child: FxText.titleMedium(
+                          controller.sessionController.name!.value
+                              .toUpperCase(),
+                          fontWeight: 600,
+                          letterSpacing: 0),
                     ),
                   ],
                 ),
@@ -159,8 +162,8 @@ class _UserProfileState extends State<UserProfile> {
       child: InkWell(
         onTap: () {
           if (navigation != null) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => navigation));
+            // Navigator.push(
+            //     context, MaterialPageRoute(builder: (context) => navigation));
           }
         },
         child: Row(
