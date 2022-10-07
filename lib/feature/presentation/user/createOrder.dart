@@ -22,19 +22,36 @@ class CreateOrderScreen extends StatefulWidget {
 }
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
-  late HomeController controller;
+  // late HomeController controller;
   late CreateOrderController createOrderController;
 
-  late ProductModel? data;
+  List<ProductModel?> data = [];
 
   @override
   void initState() {
     super.initState();
-    controller = Get.find<HomeController>();
+    // controller = Get.find<HomeController>();
     createOrderController = Get.put(CreateOrderController());
     data = Get.arguments["data"];
-    createOrderController.fileType.addAll(data!.files);
-    createOrderController.dataProduct = data!;
+    data.forEach((element) {
+      createOrderController.fileTypeBase.addAll(element!.files);
+    });
+
+    createOrderController.fileTypeBase.forEach((element) {
+      int val;
+      if (createOrderController.fileType.length < 1) {
+        createOrderController.fileType.add(element);
+      } else {
+        val = createOrderController.fileType
+            .where((p0) => p0!.label == element!.label)
+            .length;
+        if (val < 1) {
+          createOrderController.fileType.add(element);
+        }
+      }
+    });
+
+    createOrderController.dataProduct.value = data;
     // customTheme = AppTheme.customTheme;
   }
 
@@ -54,8 +71,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           appBar: AppBar(
             backgroundColor: Color(0xFFD3AB2B),
             elevation: 0,
-            title: FxText.bodyLarge(data!.prodNm!,
-                color: Colors.white, fontWeight: 600),
+            title: FxText.bodyLarge(
+                (data.length > 1) ? "Create Order" : data[0]!.prodNm!,
+                color: Colors.white,
+                fontWeight: 600),
             centerTitle: true,
           ),
           body: PageView(
@@ -80,6 +99,30 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                (createOrderController
+                                            .sessionController.roleId ==
+                                        "1")
+                                    ? createOrderController.contactInfoWidget(
+                                        label: "Kategori Konsumen",
+                                        type: "DropDown",
+                                        valueDropDown: createOrderController
+                                            .valueKonsumen.value,
+                                        item: createOrderController
+                                            .selectedKonsumen
+                                            .map((e) =>
+                                                DropdownMenuItem<String>(
+                                                    value: e!.bankId,
+                                                    child: FxText.bodySmall(
+                                                        e.bankNm!,
+                                                        fontWeight: 700,
+                                                        muted: true,
+                                                        color: Colors.black)))
+                                            .toList(),
+                                        onChangeDropDown: (value) {
+                                          createOrderController
+                                              .valueKonsumen.value = value!;
+                                        })
+                                    : Container(),
                                 createOrderController.contactInfoWidget(
                                     label: "Nama", type: "TextBox"),
                                 createOrderController.contactInfoWidget(

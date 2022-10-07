@@ -5,6 +5,8 @@ class ProductModel {
   late String? prodNm;
   late List<FileTypeModel?> files;
 
+  bool selected = false;
+
   ProductModel({this.prodId, this.prodNm});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,10 @@ class ProductModel {
   }
   Map<String, dynamic> toJson() =>
       {"prod_id": prodId, "prod_nm": prodNm, "files": files};
+  @override
+  String toString() {
+    return "{prod_id:${prodId}, prod_nm:${prodNm}}";
+  }
 }
 
 class FileTypeModel {

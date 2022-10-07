@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sitaris/utils/customIcon.dart';
 
 class Utils {
   static void navigateBack(
@@ -43,5 +44,18 @@ class Utils {
       message: text,
       snackPosition: SnackPosition.BOTTOM,
     ));
+  }
+
+  static IconData getIcon(String id) {
+    switch (id) {
+      case "31":
+        return FFIcons.k012Notary;
+      case "11":
+        return FFIcons.k001Law;
+      case "14":
+        return FFIcons.k002Global;
+      default:
+        return Icons.more_horiz_outlined;
+    }
   }
 }

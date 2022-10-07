@@ -19,6 +19,7 @@ class BaseResponseOrder {
 }
 
 class OrderMasterModel {
+  late String? orderNo;
   late String? orderId;
   late String? orderDt;
   late String? bankId;
@@ -31,6 +32,7 @@ class OrderMasterModel {
   late List<OrderDetailModel?>? orderDetail;
 
   OrderMasterModel({
+    this.orderNo,
     this.orderId,
     this.orderDt,
     this.bankId,
@@ -44,10 +46,11 @@ class OrderMasterModel {
   });
 
   OrderMasterModel.fromJson(Map<String, dynamic> json) {
+    orderNo = json['order_no'];
     orderId = json['order_id'];
     orderDt = json['order_dt'];
     bankId = json['bank_id'];
-    bankNm = json['bankNm'];
+    bankNm = json['bank_nm'];
     orderCustNm = json['order_cust_nm'];
     orderCustaddr = json['order_cust_addr'];
     statusId = json['status_id'];

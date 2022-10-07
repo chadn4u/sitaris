@@ -1,20 +1,39 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sitaris/base/baseController.dart';
+import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
+import 'package:sitaris/feature/model/order/order.dart';
+import 'package:sitaris/feature/model/product/product.dart';
+import 'package:sitaris/utils/container.dart';
+import 'package:sitaris/utils/spacing.dart';
+import 'package:sitaris/utils/text.dart';
+
+import '../../route/routes.dart';
+import '../../utils/utils.dart';
+
+enum LoadingProductState { INITIAL, LOADING, LOADED, ERROR }
 
 class HomeController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
 
   late List<Map<String, dynamic>> dummy;
-  late List<Map<String, dynamic>> dummyList;
+  RxList<Map<String, dynamic>> dummyList = <Map<String, dynamic>>[].obs;
+  RxList<ProductModel?> listDataProduct = <ProductModel?>[].obs;
 
+  final fFormat = new DateFormat('dd-MMM-yyyy');
+  final f = new DateFormat('yyyy-MM-dd');
   ScrollController scrollController = ScrollController();
+  ApiRepository _apiRepository = ApiRepository();
   late TabController tabController;
   RxInt selectedIndex = 0.obs;
+
+  Rx<LoadingProductState> state = LoadingProductState.INITIAL.obs;
 
   @override
   void onInit() {
@@ -38,120 +57,210 @@ class HomeController extends BaseController {
         "icon": Icons.exit_to_app
       },
     ];
+    getOrder();
+  }
 
-    dummyList = [
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-      {
-        "initial": "C",
-        "nama": "Chad",
-        "tanggal": "20 Jan 2022",
-        "title": "Bank BRI KC Juanda",
-        "subtitle": "No. Order: #12345",
-      },
-    ];
+  Future<void> getOrder() async {
+    // try {
+    Map<String, dynamic> _dataForGet = {
+      "order_id": "all",
+    };
+    dummyList.clear();
+
+    BaseResponseOrder result =
+        await _apiRepository.getOrderById(data: _dataForGet);
+
+    // print(data.status);
+    if (result.status! && result.data != null) {
+      //20221007
+      result.data!.forEach((element) {
+        dummyList.add({
+          "initial": getIcon(element!.statusNm!),
+          "status": element.statusNm!,
+          "nama": element.orderCustNm!.toUpperCase(),
+          "tanggal":
+              "${element.orderDt!.substring(0, 4)}-${element.orderDt!.substring(4, 6)}-${element.orderDt!.substring(6, 8)}",
+          "title": element.bankNm!.toUpperCase(),
+          "subtitle": "No. Order: #${element.orderNo}",
+        });
+      });
+    } else {
+      if (!result.status!) Utils.showSnackBar(text: result.message!);
+    }
+    // } catch (e) {
+    //   Utils.showSnackBar(text: "$e");
+    // }
+    return;
+  }
+
+  String getIcon(String status) {
+    switch (status) {
+      case "NEW":
+        return "assets/icon/new.png";
+      case "IN PROGRESS":
+        return "assets/icon/on-process.png";
+      case "COMPLETE":
+        return "assets/icon/completed.png";
+      case "CANCELED":
+        return "assets/icon/cancel.png";
+      default:
+        return "assets/icon/new.png";
+    }
+  }
+
+  void showBottomSheet() async {
+    state.value = LoadingProductState.LOADING;
+    try {
+      listDataProduct.clear();
+      BaseResponseProduct result = await _apiRepository.postProducts();
+
+      // print(data.status);
+      if (result.status!) {
+        state.value = LoadingProductState.LOADED;
+        listDataProduct.value = result.data!;
+        Get.bottomSheet(
+            Container(
+                padding: const EdgeInsets.all(8.0),
+                height: MediaQuery.of(Get.context!).size.height,
+                child: Column(
+                  children: [
+                    FxText.titleSmall(
+                      "Pilih Produk",
+                      fontWeight: 800,
+                    ),
+                    FxSpacing.height(8),
+                    selectProduct(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 24),
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      FxSpacing.xy(16, 0))),
+                              onPressed: () {
+                                Get.back();
+                                Utils.navigateTo(
+                                        name: AppRoutes.USERCREATEORDER,
+                                        args: {"data": listDataProduct})!
+                                    .then((value) {
+                                  if (sessionController.roleId == "1") {
+                                    getOrder();
+                                  }
+                                });
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Icon(
+                                    FeatherIcons.logOut,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 16),
+                                    child: const FxText.bodySmall("Next",
+                                        letterSpacing: 0.3,
+                                        fontWeight: 600,
+                                        color: Colors.white),
+                                  ),
+                                ],
+                              )),
+                        ),
+                      ],
+                    )
+                  ],
+                )),
+            backgroundColor: theme.backgroundColor,
+            barrierColor: Colors.grey.withOpacity(0.2));
+      } else {
+        state.value = LoadingProductState.ERROR;
+        Utils.showSnackBar(text: result.message!);
+      }
+    } catch (e) {
+      state.value = LoadingProductState.ERROR;
+      Utils.showSnackBar(text: "$e");
+    }
+  }
+
+  Widget selectProduct() {
+    return StatefulBuilder(builder: (context, setState) {
+      return Expanded(
+        child: ListView.builder(
+          itemBuilder: (context, index) => FxContainer(
+            onTap: () {
+              setState(() {
+                listDataProduct
+                    .firstWhere((element) =>
+                        element!.prodId == listDataProduct[index]!.prodId)!
+                    .selected = !listDataProduct[index]!.selected;
+              });
+            },
+            margin: FxSpacing.bottom(16),
+            padding: FxSpacing.all(16),
+            bordered: true,
+            border: Border.all(color: Colors.grey),
+            color: theme
+                .scaffoldBackgroundColor, //isSelected ? customTheme.card : theme.scaffoldBackgroundColor,
+            borderRadiusAll: 8,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipOval(
+                  child: Material(
+                    color: const Color(0xFFF1F4F8),
+                    // isSelected
+                    //     ? theme.colorScheme.primary
+                    //     : theme.colorScheme.primary.withAlpha(20),
+                    child: SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Icon(
+                            Utils.getIcon(listDataProduct[index]!.prodId!),
+                            color: const Color(0xFF57636C)
+                            // isSelected
+                            //     ? theme.colorScheme.onPrimary
+                            //     : theme.colorScheme.primary,
+                            )),
+                  ),
+                ),
+                FxSpacing.width(16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FxText.bodyMedium(listDataProduct[index]!.prodNm!,
+                          fontWeight: 600),
+                    ],
+                  ),
+                ),
+                // isSelected ? Space.width(16) : Space.width(20),
+                listDataProduct[index]!.selected
+                    ? Container(
+                        padding: FxSpacing.all(8),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xff10bb6b).withAlpha(40)),
+                        child: Icon(
+                          FeatherIcons.check,
+                          color: const Color(0xff10bb6b),
+                          size: 14,
+                        ),
+                      )
+                    : Container(
+                        height: 26,
+                        width: 26,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xff10bb6b))),
+                      ),
+              ],
+            ),
+          ),
+          itemCount: listDataProduct.length,
+        ),
+      );
+    });
   }
 }

@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sitaris/feature/controller/user/homeController.dart';
 import 'package:sitaris/feature/presentation/user/profile.dart';
 import 'package:sitaris/route/routes.dart';
-import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/customBottomNavigation.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
@@ -127,13 +127,14 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                         }
                                         Utils.navigateTo(
                                                 name: AppRoutes.USERCREATEORDER,
-                                                args: {"data": e})!
+                                                args: {
+                                              "data": [e]
+                                            })!
                                             .then((value) =>
                                                 controller.getOrder());
                                       },
                                       child: CategoryWidget(
-                                        iconData:
-                                            controller.getIcon(e!.prodId!),
+                                        iconData: Utils.getIcon(e!.prodId!),
                                         actionText: e.prodNm!,
                                         isSelected: false,
                                       ),
@@ -182,7 +183,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             itemCount: controller.orderMasterModel.value.length,
                             itemBuilder: (context, index) => singleWorker(
                                 name: controller
-                                    .orderMasterModel[index]!.orderId!,
+                                    .orderMasterModel[index]!.orderNo!,
                                 totalProduct: controller
                                     .orderMasterModel[index]!
                                     .orderDetail!
@@ -246,30 +247,22 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Widget noData() {
     return Container(
-      margin: FxSpacing.fromLTRB(24, 36, 24, 0),
+      margin: FxSpacing.fromLTRB(24, 12, 12, 0),
       padding: FxSpacing.all(24),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
+        color: theme.colorScheme.primary.withOpacity(0.2),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FxText.bodyLarge("Hello, Chad!",
-                  color: theme.colorScheme.onPrimary, fontWeight: 600),
-            ],
-          ),
+          Center(child: Lottie.asset('assets/lottie/empty.json', height: 200)),
           Container(
             margin: FxSpacing.top(8),
             width: MediaQuery.of(context).size.width * 0.6,
             child: FxText.bodyMedium('Saat ini kamu belum melakukan order.',
-                color: theme.colorScheme.onPrimary,
-                fontWeight: 400,
-                muted: true),
+                color: theme.colorScheme.primary, fontWeight: 400, muted: true),
           ),
         ],
       ),

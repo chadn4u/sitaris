@@ -8,8 +8,6 @@ import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/utils.dart';
-
-import '../../../utils/customIcon.dart';
 import '../../presentation/user/home.dart';
 import '../themeController.dart';
 
@@ -98,19 +96,6 @@ class HomeController extends BaseController {
     Get.delete<HomeController>();
   }
 
-  IconData getIcon(String id) {
-    switch (id) {
-      case "31":
-        return FFIcons.k012Notary;
-      case "11":
-        return FFIcons.k001Law;
-      case "14":
-        return FFIcons.k002Global;
-      default:
-        return Icons.more_horiz_outlined;
-    }
-  }
-
   void openBottomSheet() {
     Get.bottomSheet(
         Container(
@@ -126,11 +111,13 @@ class HomeController extends BaseController {
                           Get.back();
                           Utils.navigateTo(
                                   name: AppRoutes.USERCREATEORDER,
-                                  args: {"data": e})!
+                                  args: {
+                                "data": [e]
+                              })!
                               .then((value) => getOrder());
                         },
                         child: CategoryWidget(
-                          iconData: getIcon(e!.prodId!),
+                          iconData: Utils.getIcon(e!.prodId!),
                           actionText: e.prodNm!,
                           isSelected: false,
                         ),

@@ -12,10 +12,10 @@ import 'package:sitaris/feature/model/baseResponse/baseResponse.dart';
 import 'package:sitaris/feature/model/city/city.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
+import 'package:sitaris/feature/model/konsumen/konsumen.dart';
 import 'package:sitaris/feature/model/orderPreset/orderPreset.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
-import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textType.dart';
 import 'package:sitaris/utils/utils.dart';
@@ -28,14 +28,18 @@ class CreateOrderController extends BaseController {
   late TextEditingController namaController;
   late TextEditingController addressController;
   late PageController pageController;
-  late ProductModel dataProduct;
+  RxList<ProductModel?> dataProduct = RxList();
   late String orderNo;
 
   Rx<ProcessEnum> process = ProcessEnum.finish.obs;
 
   final f = new DateFormat('yyyyMMdd');
   RxList<FileTypeModel?> fileType = RxList();
+  RxList<FileTypeModel?> fileTypeBase = RxList();
   DateTime? currentBackPressTime;
+
+  RxString valueKonsumen = "".obs;
+  RxList<KonsumenModel?> selectedKonsumen = RxList();
 
   RxString valueProv = "".obs;
   RxList<ProvinceModel?> selectedProvince = RxList();
@@ -56,11 +60,17 @@ class CreateOrderController extends BaseController {
     super.onInit();
     themeController = Get.find<ThemeController>();
     namaController = TextEditingController();
-    namaController.text = sessionController.name!.value.toUpperCase();
+
     addressController = TextEditingController();
     pageController = PageController(initialPage: 0);
     getProvince();
     getOrderId();
+
+    if (sessionController.roleId == "1") {
+      getKonsumen();
+    } else {
+      namaController.text = sessionController.name!.value.toUpperCase();
+    }
 
     theme = themeController.getTheme();
   }
@@ -143,6 +153,22 @@ class CreateOrderController extends BaseController {
     }
   }
 
+  Future<bool> getKonsumen() async {
+    selectedKonsumen.clear();
+    // try {
+    BaseResponseKonsumen result = await _apiRepository.getKonsumen();
+    if (result.data != null) {
+      selectedKonsumen.addAll(result.data!);
+      valueKonsumen = selectedKonsumen[0]!.bankId!.obs;
+    }
+    return true;
+    // }
+    // catch (e) {
+    //   Utils.showSnackBar(text: e.toString());
+    //   return false;
+    // }
+  }
+
   Future<bool> getKecamatan(String cityCode) async {
     selectedKec.clear();
     try {
@@ -212,6 +238,7 @@ class CreateOrderController extends BaseController {
   }
 
   void submitOrder() async {
+    List<Map<String, dynamic>> dataProductsForSent = [];
     changeStateBtnOrder();
     try {
       fileType.forEach((element) {
@@ -223,28 +250,39 @@ class CreateOrderController extends BaseController {
       changeStateBtnOrder();
       return Utils.showSnackBar(text: es.toString());
     }
-    // List<FileTypeModel?> dataForSent = fileType;
-    // dataForSent.forEach((element) {
-    //   element!.data["value"] = base64Encode(element!.data["value"]);
-    // });
+
+    dataProduct.forEach((element) {
+      List<FileTypeModel> fileTypes = [];
+
+      element!.files.forEach((element) {
+        fileTypes.add(fileType
+            .firstWhere((elemento) => elemento!.label == element!.label)!);
+        ;
+      });
+
+      dataProductsForSent.add({
+        "prod_id": element.prodId,
+        "prod_nm": element.prodNm,
+        "files": jsonEncode(fileTypes)
+      });
+    });
+
     Map<String, dynamic> _dataForPost = {
       "order_no": orderNo, //ambil dari hit API
       "order_dt": f.format(DateTime.now()).toString(),
-      "bank_id": sessionController.bankId!.value,
-      "cust_nm": sessionController.name!.value,
+      "bank_id": (sessionController.roleId == "1")
+          ? valueKonsumen.value
+          : sessionController.bankId!.value,
+      "cust_nm": (sessionController.roleId == "1")
+          ? namaController.text
+          : sessionController.name!.value,
       "cust_addr": addressController.text,
       "cust_kel": valueKel.value,
       "cust_kodepos": selectedKel
           .firstWhere((element) => (element!.kelurahanCode == valueKel.value))!
           .postalCode,
       "create_by": sessionController.id!.value,
-      "products": [
-        {
-          "prod_id": dataProduct.prodId,
-          "prod_nm": dataProduct.prodNm,
-          "files": jsonEncode(fileType)
-        }
-      ]
+      "products": dataProductsForSent
     };
     try {
       BaseResponse result = await _apiRepository.postOrder(data: _dataForPost);
@@ -273,7 +311,7 @@ class CreateOrderController extends BaseController {
       required TextEditingController controller}) {
     return TextFormField(
       controller: controller,
-      readOnly: true,
+      readOnly: (sessionController.roleId == "1") ? false : true,
       // initialValue: sessionController.name!.value,
       style: FxTextStyle.titleSmall(
           letterSpacing: 0,

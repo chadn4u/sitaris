@@ -7,6 +7,7 @@ import 'package:sitaris/feature/model/city/city.dart';
 import 'package:sitaris/feature/model/config/config.dart';
 import 'package:sitaris/feature/model/kecamatan/kecamatan.dart';
 import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
+import 'package:sitaris/feature/model/konsumen/konsumen.dart';
 import 'package:sitaris/feature/model/login/login.dart';
 import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/orderPreset/orderPreset.dart';
@@ -157,5 +158,18 @@ class ApiRepository {
     restClient.close();
 
     return BaseResponseOrder.fromJson(result);
+  }
+
+  Future<BaseResponseKonsumen> getKonsumen({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}listbank", Method.GET, {},
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseKonsumen.fromJson(result);
   }
 }

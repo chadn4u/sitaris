@@ -84,10 +84,19 @@ class DioLoggingInterceptors extends Interceptor {
           options.headers
               .update("Authorization", (value) => "Bearer $newAccessToken");
 
-          _dio.fetch(options).then((value) {
-            debugPrint('busett dahh');
-            return handler.resolve(value);
-          }).onError((error, stackTrace) => handler.reject(err));
+          return _dio.request(options.path,
+              options: Options(
+                  method: options.method,
+                  headers: options.headers,
+                  sendTimeout: 30000,
+                  receiveTimeout: 30000));
+          // _dio.fetch(options).then((value) {
+          //   debugPrint('busett dahh');
+          //   return handler.resolve(value);
+          // }).onError((error, stackTrace) {
+          //   debugPrint("eeq ${error}");
+          //   return handler.reject(err);
+          // });
           // return handler.next(err);
         } else {
           return handler.next(err);

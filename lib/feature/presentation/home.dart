@@ -65,14 +65,27 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
     controller.scrollController.dispose();
     controller.tabController.dispose();
+    Get.delete<HomeController>();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: Colors.blue,
+        floatingActionButton: Obx(
+          () => FloatingActionButton(
+            onPressed: () {
+              if (controller.state.value == LoadingProductState.INITIAL ||
+                  controller.state.value == LoadingProductState.ERROR ||
+                  controller.state.value == LoadingProductState.LOADED)
+                controller.showBottomSheet();
+            },
+            backgroundColor: Colors.blue,
+            child: (controller.state.value == LoadingProductState.LOADING)
+                ? CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  )
+                : Icon(Icons.add),
+          ),
         ),
         bottomNavigationBar: Obx(
           () => BottomAppBar(
@@ -276,17 +289,23 @@ class _HomeScreen extends StatelessWidget {
             //   child: FxText.bodySmall("SUBMISSIONS",
             //       fontWeight: 600, letterSpacing: 0.3),
             // ),
-            Container(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: buildCategories()),
-            ),
+            (controller.sessionController.roleId! == '2')
+                ? Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: buildCategories()),
+                  )
+                : Container(),
             Container(
               padding: const EdgeInsets.only(
                   top: 20, left: 20, right: 20, bottom: 20),
-              child: const FxText.bodySmall("Pekerjaan wajib diselesaikan",
-                  fontWeight: 600, letterSpacing: 0.3),
+              child: FxText.bodySmall(
+                  (controller.sessionController.roleId! == '2')
+                      ? "Pekerjaan wajib diselesaikan"
+                      : "Order List",
+                  fontWeight: 600,
+                  letterSpacing: 0.3),
             ),
             Expanded(
               child: SizedBox(
@@ -360,57 +379,70 @@ class _ListData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
-    return ScrollConfiguration(
-      behavior: MyBehavior(),
-      child: Scrollbar(
-        controller: controller.scrollController,
-        thickness: 8.0,
-        thumbVisibility: true,
-        interactive: true,
-        child: ListView.builder(
+    return Obx(
+      () => ScrollConfiguration(
+        behavior: MyBehavior(),
+        child: Scrollbar(
           controller: controller.scrollController,
-          padding: FxSpacing.all(0),
-          itemCount: data.length,
-          itemBuilder: (context, index) => Padding(
-            padding: FxSpacing.xy(16, 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: controller.theme.colorScheme.primary,
-                  child: FxText(
-                    data[index]["initial"],
-                    color: controller.theme.colorScheme.onPrimary,
-                  ),
-                ),
-                FxSpacing.width(20),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FxText.titleSmall(
-                              data[index]["title"],
-                              fontWeight: 600,
-                            ),
-                            FxText.bodyMedium(
-                              data[index]['subtitle'],
-                              fontWeight: 600,
-                            ),
-                          ],
+          thickness: 8.0,
+          thumbVisibility: true,
+          interactive: true,
+          child: ListView.builder(
+            controller: controller.scrollController,
+            padding: FxSpacing.all(0),
+            itemCount: data.length,
+            itemBuilder: (context, index) => Padding(
+              padding: FxSpacing.xy(16, 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  CircleAvatar(
+                      backgroundColor: Colors.grey.withBlue(10),
+                      child: Center(
+                        child: Image.asset(
+                          data[index]["initial"],
+                          height: 20,
+                          width: 20,
                         ),
-                      ),
-                      FxText.titleSmall(
-                        data[index]['tanggal'],
-                        fontWeight: 600,
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      )),
+                  FxSpacing.width(20),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FxText.titleSmall(
+                                data[index]["title"],
+                                fontWeight: 800,
+                              ),
+                              FxText.bodyMedium(
+                                data[index]['subtitle'],
+                                fontWeight: 600,
+                              ),
+                              FxText.titleSmall(
+                                "Pelanggan: ${data[index]["nama"]}",
+                                fontWeight: 600,
+                              ),
+                              FxText.titleSmall(
+                                "Status: ${data[index]["status"]}",
+                                fontWeight: 600,
+                              ),
+                            ],
+                          ),
+                        ),
+                        FxText.titleSmall(
+                          controller.fFormat.format(
+                              controller.f.parse(data[index]['tanggal'])),
+                          fontWeight: 600,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
