@@ -81,16 +81,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           focusedBorderColor: Colors.transparent,
                         ),
                       ),
-                      FxSpacing.width(16),
-                      //Space.width(16),
-                      FxContainer(
-                        color: theme.primaryColor.withAlpha(32),
-                        child: Icon(
-                          FeatherIcons.camera,
-                          color: theme.primaryColor,
-                          size: 20,
-                        ),
-                      )
                     ],
                   ),
                 ),
@@ -214,15 +204,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           const Center(
             child: FxText.titleMedium("Item 2", fontWeight: 600),
           ),
-          const Center(
-            child: FxText.titleMedium("Item 3", fontWeight: 600),
-          ),
           const UserProfile()
         ],
       ),
       bottomNavigationBar: CustomBottomNavigation(
         animationDuration: const Duration(milliseconds: 350),
-        selectedItemOverlayColor: theme.colorScheme.primary.withAlpha(48),
+        selectedItemOverlayColor: theme.colorScheme.primary.withOpacity(0.8),
         backgroundColor: theme.colorScheme.background,
         selectedIndex: _currentIndex,
         onItemSelected: (index) {
@@ -234,22 +221,17 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           CustomBottomNavigationBarItem(
               title: 'Home',
               icon: const Icon(Icons.home),
-              activeColor: theme.colorScheme.primary,
+              activeColor: theme.colorScheme.background,
               inactiveColor: theme.colorScheme.onBackground.withAlpha(180)),
           CustomBottomNavigationBarItem(
               title: 'Search',
               icon: const Icon(Icons.search),
-              activeColor: theme.colorScheme.primary,
-              inactiveColor: theme.colorScheme.onBackground.withAlpha(180)),
-          CustomBottomNavigationBarItem(
-              title: 'Cart',
-              icon: const Icon(FeatherIcons.shoppingCart),
-              activeColor: theme.colorScheme.primary,
+              activeColor: theme.colorScheme.background,
               inactiveColor: theme.colorScheme.onBackground.withAlpha(180)),
           CustomBottomNavigationBarItem(
               title: 'Profile',
               icon: const Icon(Icons.people),
-              activeColor: theme.colorScheme.primary,
+              activeColor: theme.colorScheme.background,
               inactiveColor: theme.colorScheme.onBackground.withAlpha(180)),
         ],
       ),

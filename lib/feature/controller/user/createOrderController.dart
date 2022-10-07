@@ -280,6 +280,9 @@ class CreateOrderController extends BaseController {
           color: theme.colorScheme.onBackground,
           fontWeight: 500),
       decoration: InputDecoration(
+        floatingLabelAlignment: FloatingLabelAlignment.start,
+        label: FxText.bodySmall("Nama",
+            fontSize: 15, fontWeight: 700, muted: true, color: Colors.black),
         hintText: hint,
         hintStyle: FxTextStyle.titleSmall(
             letterSpacing: 0,
@@ -315,8 +318,6 @@ class CreateOrderController extends BaseController {
           icon,
           size: 22,
         ),
-        isDense: true,
-        contentPadding: const EdgeInsets.all(0),
       ),
       keyboardType: TextInputType.emailAddress,
       textCapitalization: TextCapitalization.sentences,
@@ -339,109 +340,81 @@ class CreateOrderController extends BaseController {
       List<DropdownMenuItem<String>>? item}) {
     switch (type) {
       case "TextBox":
-        return Padding(
+        return Container(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Container(
-                margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                width: MediaQuery.of(Get.context!).size.width * 0.2,
-                child: FxText.bodySmall(label,
-                    fontWeight: 700, muted: true, color: Colors.black),
-              ),
-              Expanded(
-                child: textBox(
-                    controller: namaController,
-                    hint: label,
-                    icon: Icons.people),
-              )
-            ],
-          ),
+          child: textBox(
+              controller: namaController, hint: label, icon: Icons.people),
         );
       case "DropDown":
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Container(
-                margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                width: MediaQuery.of(Get.context!).size.width * 0.2,
-                child: FxText.bodySmall(label,
-                    fontWeight: 700, muted: true, color: Colors.black),
-              ),
-              Expanded(
-                child: InputDecorator(
-                  // isEmpty: getXHome.choiceSelected.value == '',
-                  decoration: InputDecoration(
-                    hintText: 'Pilih $label',
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14.0, horizontal: 14.0),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(
-                        color: theme.colorScheme.primary,
-                        width: 1.0,
-                      ),
-                    ),
+        return Container(
+            padding: const EdgeInsets.all(8.0),
+            child: InputDecorator(
+              // isEmpty: getXHome.choiceSelected.value == '',
+              decoration: InputDecoration(
+                label: FxText.bodySmall(label,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    muted: true,
+                    color: Colors.black),
+                hintText: 'Pilih $label',
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 14.0),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.primary,
                   ),
-                  child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                          value: valueDropDown,
-                          isDense: true,
-                          onChanged: onChangeDropDown,
-                          items: item)),
                 ),
-              )
-            ],
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.primary,
+                    width: 1.0,
+                  ),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                      value: valueDropDown,
+                      isDense: true,
+                      onChanged: onChangeDropDown,
+                      items: item)),
+            ));
+      case "TextArea":
+        return Container(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            controller: addressController,
+            decoration: InputDecoration(
+                label: FxText.bodySmall(label,
+                    fontSize: 15,
+                    fontWeight: 700,
+                    muted: true,
+                    color: Colors.black),
+                hintText: "Input $label anda",
+                isDense: true,
+                filled: true,
+                fillColor: theme.colorScheme.background,
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 14.0, horizontal: 14.0),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.primary,
+                    width: 1.0,
+                  ),
+                )),
+            textCapitalization: TextCapitalization.sentences,
+            minLines: 5,
+            maxLines: 10,
           ),
         );
-      case "TextArea":
-        return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Container(
-                  margin: FxSpacing.fromLTRB(10, 0, 0, 0),
-                  width: MediaQuery.of(Get.context!).size.width * 0.2,
-                  child: FxText.bodySmall(label,
-                      fontWeight: 700, muted: true, color: Colors.black),
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: addressController,
-                    decoration: InputDecoration(
-                        hintText: "Input $label anda",
-                        isDense: true,
-                        filled: true,
-                        fillColor: theme.colorScheme.background,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 14.0),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.primary,
-                            width: 1.0,
-                          ),
-                        )),
-                    textCapitalization: TextCapitalization.sentences,
-                    minLines: 5,
-                    maxLines: 10,
-                  ),
-                ),
-              ],
-            ));
       default:
         return Container();
     }

@@ -22,7 +22,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late HomeController controller;
-
+  // final animationsMap = {
+  //   'textOnPageLoadAnimation1': AnimationInfo(
+  //     trigger: AnimationTrigger.onPageLoad,
+  //     duration: 600,
+  //     hideBeforeAnimating: true,
+  //     fadeIn: true,
+  //     initialState: AnimationState(
+  //       offset: Offset(0, 20),
+  //       scale: 1,
+  //       opacity: 0,
+  //     ),
+  //     finalState: AnimationState(
+  //       offset: Offset(0, 0),
+  //       scale: 1,
+  //       opacity: 1,
+  //     ),
+  //   ),
+  // .animated(
+  //                                 [animationsMap['textOnPageLoadAnimation1']!])
   @override
   void initState() {
     super.initState();

@@ -52,7 +52,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       child: Scaffold(
           backgroundColor: createOrderController.theme.scaffoldBackgroundColor,
           appBar: AppBar(
-            backgroundColor: createOrderController.theme.colorScheme.primary,
+            backgroundColor: Color(0xFFD3AB2B),
             elevation: 0,
             title: FxText.bodyLarge(data!.prodNm!,
                 color: Colors.white, fontWeight: 600),
@@ -62,145 +62,149 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             controller: createOrderController.pageController,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              Obx(
-                () => ListView(
-                  padding: FxSpacing.zero,
-                  children: <Widget>[
-                    Padding(
+              Obx(() => SingleChildScrollView(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            margin: FxSpacing.fromLTRB(10, 0, 0, 12),
+                            margin: FxSpacing.fromLTRB(10, 0, 0, 5),
                             child: const FxText.bodyLarge("Informasi Kontak",
                                 fontWeight: 700,
                                 muted: true,
                                 color: Colors.black),
                           ),
-                          Column(
-                            children: [
-                              createOrderController.contactInfoWidget(
-                                  label: "Nama", type: "TextBox"),
-                              createOrderController.contactInfoWidget(
-                                  label: "Provinsi",
-                                  type: "DropDown",
-                                  valueDropDown:
-                                      createOrderController.valueProv.value,
-                                  item: createOrderController.selectedProvince
-                                      .map((e) => DropdownMenuItem<String>(
-                                          value: e!.provinceCode,
-                                          child: FxText.bodySmall(
-                                              e.provinceName!,
-                                              fontWeight: 700,
-                                              muted: true,
-                                              color: Colors.black)))
-                                      .toList(),
-                                  onChangeDropDown: (value) {
-                                    createOrderController.valueProv.value =
-                                        value!;
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                createOrderController.contactInfoWidget(
+                                    label: "Nama", type: "TextBox"),
+                                createOrderController.contactInfoWidget(
+                                    label: "Provinsi",
+                                    type: "DropDown",
+                                    valueDropDown:
+                                        createOrderController.valueProv.value,
+                                    item: createOrderController.selectedProvince
+                                        .map((e) => DropdownMenuItem<String>(
+                                            value: e!.provinceCode,
+                                            child: FxText.bodySmall(
+                                                e.provinceName!,
+                                                fontWeight: 700,
+                                                muted: true,
+                                                color: Colors.black)))
+                                        .toList(),
+                                    onChangeDropDown: (value) {
+                                      createOrderController.valueProv.value =
+                                          value!;
 
-                                    createOrderController.getCity(value);
-                                    createOrderController
-                                        .resetOther("Province");
-                                  }),
-                              createOrderController.contactInfoWidget(
-                                  label: "Kota",
-                                  type: "DropDown",
-                                  valueDropDown:
-                                      createOrderController.valueCity.value,
-                                  item: createOrderController.selectedCity
-                                      .map((e) => DropdownMenuItem<String>(
-                                          value: e!.cityCode,
-                                          child: FxText.bodySmall(e.city!,
-                                              fontWeight: 700,
-                                              muted: true,
-                                              color: Colors.black)))
-                                      .toList(),
-                                  onChangeDropDown: (value) {
-                                    createOrderController.valueCity.value =
-                                        value!;
+                                      createOrderController.getCity(value);
+                                      createOrderController
+                                          .resetOther("Province");
+                                    }),
+                                createOrderController.contactInfoWidget(
+                                    label: "Kota",
+                                    type: "DropDown",
+                                    valueDropDown:
+                                        createOrderController.valueCity.value,
+                                    item: createOrderController.selectedCity
+                                        .map((e) => DropdownMenuItem<String>(
+                                            value: e!.cityCode,
+                                            child: FxText.bodySmall(e.city!,
+                                                fontWeight: 700,
+                                                muted: true,
+                                                color: Colors.black)))
+                                        .toList(),
+                                    onChangeDropDown: (value) {
+                                      createOrderController.valueCity.value =
+                                          value!;
 
-                                    createOrderController.getKecamatan(value);
-                                    createOrderController.resetOther("City");
-                                  }),
-                              createOrderController.contactInfoWidget(
-                                  label: "Kecamatan",
-                                  type: "DropDown",
-                                  valueDropDown:
-                                      createOrderController.valueKec.value,
-                                  item: createOrderController.selectedKec
-                                      .map((e) => DropdownMenuItem<String>(
-                                          value: e!.kecamatanCode,
-                                          child: FxText.bodySmall(e.kecamatan!,
-                                              fontWeight: 700,
-                                              muted: true,
-                                              color: Colors.black)))
-                                      .toList(),
-                                  onChangeDropDown: (value) {
-                                    createOrderController.valueKec.value =
-                                        value!;
+                                      createOrderController.getKecamatan(value);
+                                      createOrderController.resetOther("City");
+                                    }),
+                                createOrderController.contactInfoWidget(
+                                    label: "Kecamatan",
+                                    type: "DropDown",
+                                    valueDropDown:
+                                        createOrderController.valueKec.value,
+                                    item: createOrderController.selectedKec
+                                        .map((e) => DropdownMenuItem<String>(
+                                            value: e!.kecamatanCode,
+                                            child: FxText.bodySmall(
+                                                e.kecamatan!,
+                                                fontWeight: 700,
+                                                muted: true,
+                                                color: Colors.black)))
+                                        .toList(),
+                                    onChangeDropDown: (value) {
+                                      createOrderController.valueKec.value =
+                                          value!;
 
-                                    createOrderController.getKelurahan(value);
-                                  }),
-                              createOrderController.contactInfoWidget(
-                                  label: "Kelurahan",
-                                  type: "DropDown",
-                                  valueDropDown:
-                                      createOrderController.valueKel.value,
-                                  item: createOrderController.selectedKel
-                                      .map((e) => DropdownMenuItem<String>(
-                                          value: e!.kelurahanCode,
-                                          child: FxText.bodySmall(e.kelurahan!,
-                                              fontWeight: 700,
-                                              muted: true,
-                                              color: Colors.black)))
-                                      .toList(),
-                                  onChangeDropDown: (value) {
-                                    createOrderController.valueKel.value =
-                                        value!;
-                                  }),
-                              createOrderController.contactInfoWidget(
-                                  type: "TextArea", label: "Alamat"),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 24),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
-                                                FxSpacing.xy(16, 0))),
-                                        onPressed: () {
-                                          createOrderController.validate();
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            const Icon(
-                                              FeatherIcons.logOut,
-                                              color: Colors.white,
-                                              size: 18,
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 16),
-                                              child: const FxText.bodySmall(
-                                                  "Next",
-                                                  letterSpacing: 0.3,
-                                                  fontWeight: 600,
-                                                  color: Colors.white),
-                                            ),
-                                          ],
+                                      createOrderController.getKelurahan(value);
+                                    }),
+                                createOrderController.contactInfoWidget(
+                                    label: "Kelurahan",
+                                    type: "DropDown",
+                                    valueDropDown:
+                                        createOrderController.valueKel.value,
+                                    item: createOrderController.selectedKel
+                                        .map((e) => DropdownMenuItem<String>(
+                                            value: e!.kelurahanCode,
+                                            child: FxText.bodySmall(
+                                                e.kelurahan!,
+                                                fontWeight: 700,
+                                                muted: true,
+                                                color: Colors.black)))
+                                        .toList(),
+                                    onChangeDropDown: (value) {
+                                      createOrderController.valueKel.value =
+                                          value!;
+                                    }),
+                                createOrderController.contactInfoWidget(
+                                    type: "TextArea", label: "Alamat"),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 24),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      FxSpacing.xy(16, 0))),
+                                          onPressed: () {
+                                            createOrderController.validate();
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              const Icon(
+                                                FeatherIcons.logOut,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 16),
+                                                child: const FxText.bodySmall(
+                                                    "Next",
+                                                    letterSpacing: 0.3,
+                                                    fontWeight: 600,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           )
 
                           // singleTask(
@@ -211,10 +215,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                           //     submissionDate: "22/07/20"),
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
+                  )),
               Obx(
                 () => ListView(
                   padding: FxSpacing.zero,

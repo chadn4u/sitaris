@@ -14,7 +14,7 @@ class ThemeController extends GetxController {
     brightness: Brightness.light,
 
     /// Primary Color
-    primaryColor: const Color(0xff3C4EC5),
+    primaryColor: const Color(0xFFD3AB2B),
 
     /// Scaffold and Background color
     backgroundColor: const Color(0xffffffff),
@@ -36,7 +36,7 @@ class ThemeController extends GetxController {
 
     /// Colorscheme
     colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xff3C4EC5), brightness: Brightness.light),
+        seedColor: const Color(0xFFD3AB2B), brightness: Brightness.light),
 
     /// Floating Action Theme
     floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -134,7 +134,7 @@ class ThemeController extends GetxController {
     brightness: Brightness.dark,
 
     /// Primary Color
-    primaryColor: const Color(0xff069DEF),
+    primaryColor: const Color(0xFFD3AB2B),
 
     /// Scaffold and Background color
     scaffoldBackgroundColor: const Color(0xff161616),
@@ -150,7 +150,7 @@ class ThemeController extends GetxController {
 
     /// Colorscheme
     colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xff069DEF), brightness: Brightness.dark),
+        seedColor: const Color(0xFFD3AB2B), brightness: Brightness.dark),
 
     /// Input (Text-Field) Theme
     inputDecorationTheme: const InputDecorationTheme(
@@ -250,7 +250,7 @@ class ThemeController extends GetxController {
   );
 
   ThemeData getTheme() {
-    return createThemeM3(themeType, const Color(0xff2e87a6));
+    return createThemeM3(themeType, const Color(0xFFD3AB2B));
   }
 
   ThemeData createThemeM3(ThemeType themeType, Color seedColor) {
