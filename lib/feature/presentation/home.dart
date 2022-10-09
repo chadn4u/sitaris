@@ -22,25 +22,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late HomeController controller;
-  // final animationsMap = {
-  //   'textOnPageLoadAnimation1': AnimationInfo(
-  //     trigger: AnimationTrigger.onPageLoad,
-  //     duration: 600,
-  //     hideBeforeAnimating: true,
-  //     fadeIn: true,
-  //     initialState: AnimationState(
-  //       offset: Offset(0, 20),
-  //       scale: 1,
-  //       opacity: 0,
-  //     ),
-  //     finalState: AnimationState(
-  //       offset: Offset(0, 0),
-  //       scale: 1,
-  //       opacity: 1,
-  //     ),
-  //   ),
-  // .animated(
-  //                                 [animationsMap['textOnPageLoadAnimation1']!])
+
+  //
   @override
   void initState() {
     super.initState();
@@ -72,20 +55,22 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: Obx(
-          () => FloatingActionButton(
-            onPressed: () {
-              if (controller.state.value == LoadingProductState.INITIAL ||
-                  controller.state.value == LoadingProductState.ERROR ||
-                  controller.state.value == LoadingProductState.LOADED)
-                controller.showBottomSheet();
-            },
-            backgroundColor: Colors.blue,
-            child: (controller.state.value == LoadingProductState.LOADING)
-                ? CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                  )
-                : Icon(Icons.add),
-          ),
+          () => (controller.selectedIndex.value == 0)
+              ? FloatingActionButton(
+                  onPressed: () {
+                    if (controller.state.value == LoadingProductState.INITIAL ||
+                        controller.state.value == LoadingProductState.ERROR ||
+                        controller.state.value == LoadingProductState.LOADED)
+                      controller.showBottomSheet();
+                  },
+                  backgroundColor: Colors.blue,
+                  child: (controller.state.value == LoadingProductState.LOADING)
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                        )
+                      : Icon(Icons.add),
+                )
+              : Container(),
         ),
         bottomNavigationBar: Obx(
           () => BottomAppBar(
@@ -229,92 +214,97 @@ class _HomeScreen extends StatelessWidget {
   final controller = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: FxSpacing.only(top: FxSpacing.safeAreaTop(context) + 20),
-        color: controller.theme.backgroundColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: FxText.bodyMedium(
-                        "Selamat datang, ${controller.sessionController.name!.value.toUpperCase()}.",
-                        fontWeight: 600,
-                        letterSpacing: 0.3)),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: InkWell(
-                      onTap: () {
-                        debugPrint('test');
-                      },
-                      child: const Icon(
-                        Icons.notifications,
-                        color: Colors.black,
+    return Obx(
+      () => Container(
+          padding: FxSpacing.only(top: FxSpacing.safeAreaTop(context) + 20),
+          color: controller.theme.backgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                      margin:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: FxText.bodyMedium(
+                          "Selamat datang, ${controller.sessionController.name!.value.toUpperCase()}.",
+                          fontWeight: 600,
+                          letterSpacing: 0.3)),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InkWell(
+                        onTap: () {
+                          debugPrint('test');
+                        },
+                        child: const Icon(
+                          Icons.notifications,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
-            Container(
-              child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  crossAxisCount: 2,
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 20,
-                  children: const <Widget>[
-                    _SingleSubject(
-                      completed: "Pekerjaan Tertunda",
-                      subject: '10',
-                      backgroundColor: Colors.blue,
-                    ),
-                    _SingleSubject(
-                      completed: "Covernote Tertunda",
-                      subject: '5',
-                      backgroundColor: Colors.red,
-                    ),
-                  ]),
-            ),
-            // Container(
-            //   padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-            //   child: FxText.bodySmall("SUBMISSIONS",
-            //       fontWeight: 600, letterSpacing: 0.3),
-            // ),
-            (controller.sessionController.roleId! == '2')
-                ? Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: buildCategories()),
                   )
-                : Container(),
-            Container(
-              padding: const EdgeInsets.only(
-                  top: 20, left: 20, right: 20, bottom: 20),
-              child: FxText.bodySmall(
-                  (controller.sessionController.roleId! == '2')
-                      ? "Pekerjaan wajib diselesaikan"
-                      : "Order List",
-                  fontWeight: 600,
-                  letterSpacing: 0.3),
-            ),
-            Expanded(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: _ListData(data: controller.dummyList),
+                ],
               ),
-            )
-          ],
-        ));
+              Container(
+                child: GridView.count(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    crossAxisCount: 2,
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    mainAxisSpacing: 20,
+                    childAspectRatio: 3 / 2,
+                    crossAxisSpacing: 20,
+                    children: const <Widget>[
+                      _SingleSubject(
+                        completed: "Pekerjaan Tertunda",
+                        subject: '10',
+                        backgroundColor: Colors.blue,
+                      ),
+                      _SingleSubject(
+                        completed: "Covernote Tertunda",
+                        subject: '5',
+                        backgroundColor: Colors.red,
+                      ),
+                    ]),
+              ),
+              // Container(
+              //   padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              //   child: FxText.bodySmall("SUBMISSIONS",
+              //       fontWeight: 600, letterSpacing: 0.3),
+              // ),
+              (controller.sessionController.roleId! == '2')
+                  ? Container(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: buildCategories()),
+                    )
+                  : Container(),
+              Container(
+                padding: const EdgeInsets.only(
+                    top: 20, left: 20, right: 20, bottom: 20),
+                child: FxText.bodySmall(
+                    (controller.sessionController.roleId! == '2')
+                        ? "Pekerjaan wajib diselesaikan"
+                        : "Order List",
+                    fontWeight: 600,
+                    letterSpacing: 0.3),
+              ),
+              Expanded(
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: controller
+                        .getListData() //_ListData(data: controller.dummyList),
+                    ),
+              )
+            ],
+          )),
+    );
   }
 
   List<Widget> buildCategories() {
@@ -372,10 +362,10 @@ class _HomeScreen extends StatelessWidget {
   }
 }
 
-class _ListData extends StatelessWidget {
+class ListData extends StatelessWidget {
   final List<Map<String, dynamic>> data;
 
-  const _ListData({super.key, required this.data});
+  const ListData({super.key, required this.data});
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();

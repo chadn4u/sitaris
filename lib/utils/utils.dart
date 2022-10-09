@@ -58,4 +58,31 @@ class Utils {
         return Icons.more_horiz_outlined;
     }
   }
+
+  static double dynamicWidth(double val) {
+    // double percentage = MediaQuery.of(Get.context).size.width * val;
+    // return ScreenUtil().setWidth(val.w);
+    // if (SizerUtil.deviceType == DeviceType.tablet)
+    //   return MediaQuery.of(Get.context).size.width * (val / 100);
+    // else
+    return MediaQuery.of(Get.context!).size.width * (val / 100);
+  }
+
+  static double dynamicHeight(double val) {
+    // double percentage = MediaQuery.of(Get.context).size.height * val;
+    // return ScreenUtil().setHeight(val.h);
+    // if (SizerUtil.deviceType == DeviceType.tablet) {
+    //   return MediaQuery.of(Get.context).size.height * (val / 100);
+    // } else
+    return MediaQuery.of(Get.context!).size.height * (val / 100);
+  }
+
+  // static double dynamicFont(double val) {
+  //   if (SizerUtil.deviceType == DeviceType.tablet) {
+  //     return val * 1.5;
+  //   } else {
+  //     return ScreenUtil().setSp(val);
+  //   }
+  //   // return val.sp;
+  // }
 }

@@ -20,12 +20,13 @@ class ApiRepository {
   ApiRepository() {
     restClient = Get.find();
   }
-  Future<TokenModel> postToken({Map<String, dynamic>? data}) async {
+  Future<TokenModel> postToken(
+      {Map<String, dynamic>? data, bool refresh = false}) async {
     final result = await restClient.request(
         "${BASE_URL_TOKEN}authorize/client_credentials", Method.POST, data);
 
-    debugPrint(result.toString());
-    restClient.close();
+    if (!refresh) restClient.close();
+    debugPrint('token ${restClient.connectionClose}');
 
     return TokenModel.fromJson(result);
   }
@@ -171,5 +172,19 @@ class ApiRepository {
     restClient.close();
 
     return BaseResponseKonsumen.fromJson(result);
+  }
+
+  Future<BaseResponse> testInterceptor({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}testing401", Method.GET, {},
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+    debugPrint('test ${restClient.connectionClose}');
+
+    return BaseResponse.fromJson(result);
   }
 }

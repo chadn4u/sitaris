@@ -51,7 +51,6 @@ class RestClient extends GetxService {
     if (connectionClose) {
       init();
     }
-    debugPrint(params.toString());
     try {
       if (method == Method.POST) {
         response = await _dio.post(url, data: params, options: opt);

@@ -8,6 +8,8 @@ import 'package:sitaris/feature/controller/user/homeController.dart';
 import 'package:sitaris/feature/presentation/user/profile.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/customBottomNavigation.dart';
+import 'package:sitaris/utils/shimmer/shimmerOrderUser.dart';
+import 'package:sitaris/utils/shimmer/simmerProductUser.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textField.dart';
@@ -98,75 +100,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             () => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 0.8,
-                            blurRadius: 1,
-                            offset: const Offset(
-                                1, 1), // changes position of shadow
-                          ),
-                        ],
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10.0)),
-                        color: theme.scaffoldBackgroundColor),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ...controller.listMenu
-                              .map((e) => Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        if (e.prodId == "0") {
-                                          return controller.openBottomSheet();
-                                        }
-                                        Utils.navigateTo(
-                                                name: AppRoutes.USERCREATEORDER,
-                                                args: {
-                                              "data": [e]
-                                            })!
-                                            .then((value) =>
-                                                controller.getOrder());
-                                      },
-                                      child: CategoryWidget(
-                                        iconData: Utils.getIcon(e!.prodId!),
-                                        actionText: e.prodNm!,
-                                        isSelected: false,
-                                      ),
-                                    ),
-                                  ))
-                              .toList()
-                          // [...list.map((e) => _card(e)).toList()]
-                        ]
-                        // <Widget>[
-
-                        // Expanded(
-                        //   child: InkWell(
-                        //     onTap: () {
-                        //       _pageController!.jumpToPage(4);
-                        //     },
-                        //     child: const _CategoryWidget(
-                        //       iconData: FFIcons.k023Division,
-                        //       actionText: "Hibah",
-                        //       isSelected: false,
-                        //     ),
-                        //   ),
-                        // ),
-
-                        // ],
-                        ),
-                  ),
-                ),
-                // Expanded(
-                //   child: Center(
-                //     child: noData(),
-                //   ),
-                // )
+                controller.getWidgetProduct(),
                 (controller.orderMasterModel.value.length > 0)
                     ? Padding(
                         padding:
@@ -175,30 +109,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             FxText.titleSmall("Order Anda...", fontWeight: 600),
                       )
                     : Container(),
-                (controller.orderMasterModel.value.length > 0)
-                    ? Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: controller.getOrder,
-                          child: ListView.builder(
-                            itemCount: controller.orderMasterModel.value.length,
-                            itemBuilder: (context, index) => singleWorker(
-                                name: controller
-                                    .orderMasterModel[index]!.orderNo!,
-                                totalProduct: controller
-                                    .orderMasterModel[index]!
-                                    .orderDetail!
-                                    .length
-                                    .toString(),
-                                status: controller
-                                    .orderMasterModel[index]!.statusNm!),
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: Center(
-                          child: noData(),
-                        ),
-                      ),
+                controller.getWidgetOrder()
               ],
             ),
           ),
@@ -243,105 +154,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     setState(() {
       _currentIndex = value;
     });
-  }
-
-  Widget noData() {
-    return Container(
-      margin: FxSpacing.fromLTRB(24, 12, 12, 0),
-      padding: FxSpacing.all(24),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.2),
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(child: Lottie.asset('assets/lottie/empty.json', height: 200)),
-          Container(
-            margin: FxSpacing.top(8),
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: FxText.bodyMedium('Saat ini kamu belum melakukan order.',
-                color: theme.colorScheme.primary, fontWeight: 400, muted: true),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget singleWorker(
-      {required String name,
-      required String totalProduct,
-      double? perHour,
-      double? rate,
-      required String status,
-      Color? statusColor}) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 1),
-            borderRadius: const BorderRadius.all(Radius.circular(8))),
-        child: InkWell(
-          onTap: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => WorkerInformationScreen()));
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(8, 8, 4, 8),
-                child: Container(
-                  width: 4,
-                  height: 90,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                      color: controller.theme.primaryColor),
-
-                  // child: ClipRRect(
-                  //   borderRadius: BorderRadius.all(Radius.circular(8)),
-                  //   child: Image(
-                  //     image: AssetImage(image),
-                  //     width: 72,
-                  //     height: 72,
-                  //   ),
-                  // ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12, 12, 16, 12),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    FxText.titleLarge(
-                      name,
-                      color: theme.colorScheme.onBackground,
-                      fontWeight: 600,
-                    ),
-                    FxText.bodyMedium(
-                      "Total Products : ($totalProduct)",
-                      color: theme.colorScheme.onBackground,
-                      fontWeight: 600,
-                    ),
-                    FxText.bodyMedium(
-                      "Status: $status",
-                      color: theme.colorScheme.onBackground,
-                      fontWeight: 600,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

@@ -7,12 +7,14 @@ import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/login/login.dart';
 import 'package:sitaris/route/routes.dart';
+import 'package:sitaris/utils/animation.dart';
 import 'package:sitaris/utils/utils.dart';
 
 class LoginController extends BaseController {
   GlobalKey<FormState> formKey = GlobalKey();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  Map<String, AnimationInfo> animationsMap = {};
 
   late OutlineInputBorder outlineInputBorder;
   late ThemeData theme;
@@ -32,6 +34,41 @@ class LoginController extends BaseController {
     );
     themeController = Get.find<ThemeController>();
     theme = themeController.getTheme();
+
+    animationsMap.addAll({
+      'textOnPageLoadAnimation1': AnimationInfo(
+        trigger: AnimationTrigger.onPageLoad,
+        duration: 600,
+        hideBeforeAnimating: true,
+        fadeIn: true,
+        initialState: AnimationState(
+          offset: Offset(0, 20),
+          scale: 1,
+          opacity: 0,
+        ),
+        finalState: AnimationState(
+          offset: Offset(0, 0),
+          scale: 1,
+          opacity: 1,
+        ),
+      ),
+      'containerInPageLoadAnimation1': AnimationInfo(
+        trigger: AnimationTrigger.onPageLoad,
+        duration: 600,
+        hideBeforeAnimating: true,
+        fadeIn: true,
+        initialState: AnimationState(
+          offset: Offset(100, 0),
+          scale: 1,
+          opacity: 0,
+        ),
+        finalState: AnimationState(
+          offset: Offset(0, 0),
+          scale: 1,
+          opacity: 1,
+        ),
+      ),
+    });
   }
 
   String? validateEmail(String? text) {

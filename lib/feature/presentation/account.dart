@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
+import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/accountController.dart';
 import 'package:sitaris/utils/scrollBehavior.dart';
 import 'package:sitaris/utils/spacing.dart';
@@ -379,7 +380,8 @@ class AccountScreen extends StatelessWidget {
                           ),
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              ApiRepository repo = ApiRepository();
+                              repo.testInterceptor();
                             },
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all(

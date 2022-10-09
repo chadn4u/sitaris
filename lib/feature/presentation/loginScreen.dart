@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/loginController.dart';
+import 'package:sitaris/utils/animation.dart';
 import 'package:sitaris/utils/button.dart';
 import 'package:sitaris/utils/constants.dart';
 import 'package:sitaris/utils/spacing.dart';
@@ -17,12 +18,14 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   late LoginController controller;
   @override
   void initState() {
     super.initState();
     controller = Get.put(LoginController());
+    startPageLoadAnimations(controller.animationsMap.values, this);
   }
 
   @override
@@ -40,19 +43,24 @@ class _LoginScreenState extends State<LoginScreen> {
               const FxText.displayLarge(
                 "Hello",
                 fontWeight: 700,
-              ),
+              ).animated(
+                  [controller.animationsMap['textOnPageLoadAnimation1']!]),
               const FxText.bodyLarge(
                 "Sign in to your account",
                 fontWeight: 600,
-              ),
+              ).animated(
+                  [controller.animationsMap['textOnPageLoadAnimation1']!]),
               FxSpacing.height(40),
-              loginForm(),
+              loginForm().animated(
+                  [controller.animationsMap['containerInPageLoadAnimation1']!]),
               FxSpacing.height(12),
-              forgotPassword(),
+              forgotPassword().animated(
+                  [controller.animationsMap['textOnPageLoadAnimation1']!]),
               FxSpacing.height(20),
               loginButton(),
               FxSpacing.height(20),
-              registerBtn(),
+              registerBtn().animated(
+                  [controller.animationsMap['textOnPageLoadAnimation1']!]),
             ],
           ),
         ),
@@ -137,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const FxText.headlineLarge(
           "Sign In",
           fontWeight: 700,
-        ),
+        ).animated([controller.animationsMap['textOnPageLoadAnimation1']!]),
         FxSpacing.width(20),
         FxButton(
           onPressed: () {
@@ -150,7 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
             color: controller.theme.colorScheme.onPrimary,
             size: 24,
           ),
-        ),
+        ).animated(
+            [controller.animationsMap['containerInPageLoadAnimation1']!]),
       ],
     );
   }

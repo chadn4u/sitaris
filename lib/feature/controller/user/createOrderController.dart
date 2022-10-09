@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,7 @@ class CreateOrderController extends BaseController {
   late String orderNo;
 
   Rx<ProcessEnum> process = ProcessEnum.finish.obs;
+  RxInt activePage = 0.obs;
 
   final f = new DateFormat('yyyyMMdd');
   RxList<FileTypeModel?> fileType = RxList();
@@ -93,7 +95,17 @@ class CreateOrderController extends BaseController {
     } else if (addressController.text.isEmpty) {
       Utils.showSnackBar(text: "Alamat tidak boleh kosong");
     } else {
-      pageController.jumpToPage(1);
+      if (sessionController.roleId == "1") {
+        if (valueKonsumen.isEmpty) {
+          Utils.showSnackBar(text: "Kategori konsumen tidak boleh kosong");
+        } else if (namaController.text == "") {
+          Utils.showSnackBar(text: "Nama konsumen tidak boleh kosong");
+        } else {
+          pageController.jumpToPage(1);
+        }
+      } else {
+        pageController.jumpToPage(1);
+      }
     }
   }
 
@@ -154,7 +166,7 @@ class CreateOrderController extends BaseController {
   }
 
   Future<bool> getKonsumen() async {
-    selectedKonsumen.clear();
+    if (selectedKonsumen.length > 0) selectedKonsumen.clear();
     // try {
     BaseResponseKonsumen result = await _apiRepository.getKonsumen();
     if (result.data != null) {
@@ -290,7 +302,7 @@ class CreateOrderController extends BaseController {
         Utils.showSnackBar(text: result.message!);
         changeStateBtnOrder();
         Future.delayed(Duration(seconds: 3), () {
-          Get.back(closeOverlays: true);
+          pageController.jumpToPage(2);
         });
       } else {
         throw result.message!;
@@ -374,8 +386,9 @@ class CreateOrderController extends BaseController {
       {required String type,
       required String label,
       String? valueDropDown,
-      Function(String?)? onChangeDropDown,
-      List<DropdownMenuItem<String>>? item}) {
+      Function(dynamic)? onChangeDropDown,
+      String? dropDownType,
+      List<dynamic>? item}) {
     switch (type) {
       case "TextBox":
         return Container(
@@ -386,37 +399,53 @@ class CreateOrderController extends BaseController {
       case "DropDown":
         return Container(
             padding: const EdgeInsets.all(8.0),
-            child: InputDecorator(
-              // isEmpty: getXHome.choiceSelected.value == '',
-              decoration: InputDecoration(
-                label: FxText.bodySmall(label,
-                    fontSize: 15,
-                    fontWeight: 700,
-                    muted: true,
-                    color: Colors.black),
-                hintText: 'Pilih $label',
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14.0, horizontal: 14.0),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary,
+            child: DropdownSearch<dynamic>(
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  label: FxText.bodySmall(label,
+                      fontSize: 15,
+                      fontWeight: 700,
+                      muted: true,
+                      color: Colors.black),
+                  hintText: 'Pilih $label',
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 14.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary,
-                    width: 1.0,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.primary,
+                      width: 1.0,
+                    ),
                   ),
                 ),
               ),
-              child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                      value: valueDropDown,
-                      isDense: true,
-                      onChanged: onChangeDropDown,
-                      items: item)),
+              itemAsString: (item) {
+                if (dropDownType == "Konsumen") {
+                  item as KonsumenModel;
+                  return item.bankNm!;
+                } else if (dropDownType == "Province") {
+                  item as ProvinceModel;
+                  return item.provinceName!;
+                } else if (dropDownType == "City") {
+                  item as CityModel;
+                  return item.city!;
+                } else if (dropDownType == "Kecamatan") {
+                  item as KecamatanModel;
+                  return item.kecamatan!;
+                } else {
+                  item as KelurahanModel;
+                  return item.kelurahan!;
+                }
+              },
+              popupProps: PopupProps.menu(showSearchBox: true),
+              items: item!,
+              onChanged: onChangeDropDown,
             ));
       case "TextArea":
         return Container(
@@ -472,7 +501,12 @@ class CreateOrderController extends BaseController {
                     // Pick an image
                     final XFile? image =
                         await _picker.pickImage(source: ImageSource.gallery);
-                    Uint8List byteImage = await image!.readAsBytes();
+                    if (!image!.path.isImageFileName) {
+                      return Utils.showSnackBar(
+                          text:
+                              "Invalid format file, (Only .jpg,.png are allowed)");
+                    }
+                    Uint8List byteImage = await image.readAsBytes();
                     fileType
                         .firstWhere((element) => element!.label == label)!
                         .data!

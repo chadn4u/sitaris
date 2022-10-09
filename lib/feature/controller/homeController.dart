@@ -9,7 +9,9 @@ import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/product/product.dart';
+import 'package:sitaris/feature/presentation/home.dart';
 import 'package:sitaris/utils/container.dart';
+import 'package:sitaris/utils/shimmer/shimmerOrderAdmin.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 
@@ -18,10 +20,11 @@ import '../../utils/utils.dart';
 
 enum LoadingProductState { INITIAL, LOADING, LOADED, ERROR }
 
+enum LoadingOrderState { INITIAL, LOADING, LOADED, ERROR, EMPTY }
+
 class HomeController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
-
   late List<Map<String, dynamic>> dummy;
   RxList<Map<String, dynamic>> dummyList = <Map<String, dynamic>>[].obs;
   RxList<ProductModel?> listDataProduct = <ProductModel?>[].obs;
@@ -34,6 +37,8 @@ class HomeController extends BaseController {
   RxInt selectedIndex = 0.obs;
 
   Rx<LoadingProductState> state = LoadingProductState.INITIAL.obs;
+  Rx<LoadingOrderState> stateOrder = LoadingOrderState.INITIAL.obs;
+  String? errorTextOrder = "";
 
   @override
   void onInit() {
@@ -57,39 +62,49 @@ class HomeController extends BaseController {
         "icon": Icons.exit_to_app
       },
     ];
-    getOrder();
+    if (sessionController.roleId!.value == '1') getOrder();
   }
 
   Future<void> getOrder() async {
-    // try {
-    Map<String, dynamic> _dataForGet = {
-      "order_id": "all",
-    };
-    dummyList.clear();
+    stateOrder.value = LoadingOrderState.LOADING;
+    try {
+      Map<String, dynamic> _dataForGet = {
+        "order_id": "all",
+      };
+      dummyList.clear();
 
-    BaseResponseOrder result =
-        await _apiRepository.getOrderById(data: _dataForGet);
+      BaseResponseOrder result =
+          await _apiRepository.getOrderById(data: _dataForGet);
 
-    // print(data.status);
-    if (result.status! && result.data != null) {
-      //20221007
-      result.data!.forEach((element) {
-        dummyList.add({
-          "initial": getIcon(element!.statusNm!),
-          "status": element.statusNm!,
-          "nama": element.orderCustNm!.toUpperCase(),
-          "tanggal":
-              "${element.orderDt!.substring(0, 4)}-${element.orderDt!.substring(4, 6)}-${element.orderDt!.substring(6, 8)}",
-          "title": element.bankNm!.toUpperCase(),
-          "subtitle": "No. Order: #${element.orderNo}",
-        });
-      });
-    } else {
-      if (!result.status!) Utils.showSnackBar(text: result.message!);
+      // print(data.status);
+      if (result.status! && result.data != null) {
+        //20221007
+        if (result.data!.length > 0) {
+          result.data!.forEach((element) {
+            dummyList.add({
+              "initial": getIcon(element!.statusNm!),
+              "status": element.statusNm!,
+              "nama": element.orderCustNm!.toUpperCase(),
+              "tanggal":
+                  "${element.orderDt!.substring(0, 4)}-${element.orderDt!.substring(4, 6)}-${element.orderDt!.substring(6, 8)}",
+              "title": element.bankNm!.toUpperCase(),
+              "subtitle": "No. Order: #${element.orderNo}",
+            });
+          });
+          stateOrder.value = LoadingOrderState.LOADED;
+        } else {
+          stateOrder.value = LoadingOrderState.EMPTY;
+        }
+      } else {
+        errorTextOrder = result.message!;
+        stateOrder.value = LoadingOrderState.ERROR;
+        // if (!result.status!) Utils.showSnackBar(text: result.message!);
+      }
+    } catch (e) {
+      errorTextOrder = e.toString();
+      stateOrder.value = LoadingOrderState.ERROR;
+      // Utils.showSnackBar(text: "$e");
     }
-    // } catch (e) {
-    //   Utils.showSnackBar(text: "$e");
-    // }
     return;
   }
 
@@ -140,15 +155,26 @@ class HomeController extends BaseController {
                                   padding: MaterialStateProperty.all(
                                       FxSpacing.xy(16, 0))),
                               onPressed: () {
-                                Get.back();
-                                Utils.navigateTo(
-                                        name: AppRoutes.USERCREATEORDER,
-                                        args: {"data": listDataProduct})!
-                                    .then((value) {
-                                  if (sessionController.roleId == "1") {
-                                    getOrder();
+                                int selected = 0;
+                                listDataProduct.forEach((element) {
+                                  if (element!.selected) {
+                                    selected++;
                                   }
                                 });
+                                if (selected > 0) {
+                                  Get.back();
+                                  Utils.navigateTo(
+                                          name: AppRoutes.USERCREATEORDER,
+                                          args: {"data": listDataProduct})!
+                                      .then((value) {
+                                    if (sessionController.roleId == "1") {
+                                      getOrder();
+                                    }
+                                  });
+                                } else {
+                                  Utils.showSnackBar(
+                                      text: "Product belum di pilih");
+                                }
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -262,5 +288,19 @@ class HomeController extends BaseController {
         ),
       );
     });
+  }
+
+  Widget getListData() {
+    switch (stateOrder.value) {
+      case LoadingOrderState.ERROR:
+        return FxText.bodySmall(errorTextOrder!,
+            letterSpacing: 0.3, fontWeight: 600, color: Colors.black);
+      case LoadingOrderState.LOADED:
+        return ListData(data: dummyList);
+      case LoadingOrderState.INITIAL:
+      case LoadingOrderState.LOADING:
+      default:
+        return ShimmerOrderAdmin();
+    }
   }
 }
