@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -13,11 +14,13 @@ import 'package:sitaris/feature/model/kelurahan/kelurahan.dart';
 import 'package:sitaris/feature/model/konsumen/konsumen.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
+import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/button.dart';
 import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/fxCard.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
+import 'package:sitaris/utils/utils.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   const CreateOrderScreen({Key? key}) : super(key: key);
@@ -307,14 +310,42 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                                                 Container(
                                                               child: Stack(
                                                                 children: [
-                                                                  Image.memory(
-                                                                    base64Decode(
-                                                                        element[
-                                                                            "value"]),
-                                                                    height: 120,
-                                                                    width: 120,
-                                                                    fit: BoxFit
-                                                                        .fill,
+                                                                  InkWell(
+                                                                    onTap: () {
+                                                                      Uint8List
+                                                                          img =
+                                                                          base64Decode(
+                                                                              element['value']);
+
+                                                                      Utils.showSnackBar(
+                                                                          text: img
+                                                                              .length
+                                                                              .toString());
+                                                                      Utils.navigateTo(
+                                                                          name:
+                                                                              AppRoutes.ZOOMSCREEN,
+                                                                          args: {
+                                                                            "heroName":
+                                                                                element["id"].toString(),
+                                                                            "bytes":
+                                                                                base64Decode(element['value']),
+                                                                          });
+                                                                    },
+                                                                    child: Hero(
+                                                                      tag: element[
+                                                                          "id"],
+                                                                      child: Image
+                                                                          .memory(
+                                                                        base64Decode(
+                                                                            element["value"]),
+                                                                        height:
+                                                                            120,
+                                                                        width:
+                                                                            120,
+                                                                        fit: BoxFit
+                                                                            .fill,
+                                                                      ),
+                                                                    ),
                                                                   ),
                                                                   Align(
                                                                     alignment:
