@@ -124,6 +124,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                       label: "Kategori Konsumen",
                                       type: "DropDown",
                                       dropDownType: "Konsumen",
+                                      selectedDropDown: (createOrderController
+                                                  .valueKonsumen.value !=
+                                              "")
+                                          ? createOrderController
+                                              .selectedKonsumen
+                                              .firstWhere((element) =>
+                                                  element!.bankId ==
+                                                  createOrderController
+                                                      .valueKonsumen.value)
+                                          : null,
                                       valueDropDown: createOrderController
                                           .valueKonsumen.value,
                                       item: createOrderController
@@ -140,6 +150,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   label: "Provinsi",
                                   type: "DropDown",
                                   dropDownType: "Province",
+                                  selectedDropDown: (createOrderController
+                                              .valueProv.value !=
+                                          "")
+                                      ? createOrderController.selectedProvince
+                                          .firstWhere((element) =>
+                                              element!.provinceCode ==
+                                              createOrderController
+                                                  .valueProv.value)
+                                      : null,
                                   valueDropDown:
                                       createOrderController.valueProv.value,
                                   item: createOrderController.selectedProvince,
@@ -157,6 +176,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   label: "Kota",
                                   type: "DropDown",
                                   dropDownType: "City",
+                                  selectedDropDown:
+                                      (createOrderController.valueCity.value !=
+                                              "")
+                                          ? createOrderController.selectedCity
+                                              .firstWhere((element) =>
+                                                  element!.cityCode ==
+                                                  createOrderController
+                                                      .valueCity.value)
+                                          : null,
                                   valueDropDown:
                                       createOrderController.valueCity.value,
                                   item: createOrderController.selectedCity,
@@ -173,6 +201,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   label: "Kecamatan",
                                   type: "DropDown",
                                   dropDownType: "Kecamatan",
+                                  selectedDropDown:
+                                      (createOrderController.valueKec.value !=
+                                              "")
+                                          ? createOrderController.selectedKec
+                                              .firstWhere((element) =>
+                                                  element!.kecamatanCode ==
+                                                  createOrderController
+                                                      .valueKec.value)
+                                          : null,
                                   valueDropDown:
                                       createOrderController.valueKec.value,
                                   item: createOrderController.selectedKec,
@@ -188,6 +225,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   label: "Kelurahan",
                                   type: "DropDown",
                                   dropDownType: "Kelurahan",
+                                  selectedDropDown:
+                                      (createOrderController.valueKel.value !=
+                                              "")
+                                          ? createOrderController.selectedKel
+                                              .firstWhere((element) =>
+                                                  element!.kelurahanCode ==
+                                                  createOrderController
+                                                      .valueKel.value)
+                                          : null,
                                   valueDropDown:
                                       createOrderController.valueKel.value,
                                   item: createOrderController.selectedKel,

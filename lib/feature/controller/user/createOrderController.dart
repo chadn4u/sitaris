@@ -87,6 +87,10 @@ class CreateOrderController extends BaseController {
   }
 
   void validate() {
+    debugPrint(valueProv.value);
+    debugPrint(valueCity.value);
+    debugPrint(valueKec.value);
+    debugPrint(valueKel.value);
     if (valueProv.isEmpty) {
       Utils.showSnackBar(text: "Provinsi tidak boleh kosong");
     } else if (valueCity.isEmpty) {
@@ -305,6 +309,7 @@ class CreateOrderController extends BaseController {
         Utils.showSnackBar(text: result.message!);
         changeStateBtnOrder();
         pageController.jumpToPage(2);
+        fileType.clear();
       } else {
         throw result.message!;
       }
@@ -386,6 +391,7 @@ class CreateOrderController extends BaseController {
   Widget contactInfoWidget(
       {required String type,
       required String label,
+      dynamic selectedDropDown,
       String? valueDropDown,
       Function(dynamic)? onChangeDropDown,
       String? dropDownType,
@@ -401,6 +407,7 @@ class CreateOrderController extends BaseController {
         return Container(
             padding: const EdgeInsets.all(8.0),
             child: DropdownSearch<dynamic>(
+              selectedItem: selectedDropDown,
               dropdownDecoratorProps: DropDownDecoratorProps(
                 dropdownSearchDecoration: InputDecoration(
                   label: FxText.bodySmall(label,
@@ -444,7 +451,9 @@ class CreateOrderController extends BaseController {
                   return item.kelurahan!;
                 }
               },
-              popupProps: PopupProps.menu(showSearchBox: true),
+              popupProps: PopupProps.menu(
+                showSearchBox: true,
+              ),
               items: item!,
               onChanged: onChangeDropDown,
             ));
@@ -499,6 +508,24 @@ class CreateOrderController extends BaseController {
                 InkWell(
                   onTap: () async {
                     Get.back();
+                    Get.dialog(
+                        Center(
+                          child: Container(
+                            width: Utils.dynamicWidth(70),
+                            height: Utils.dynamicHeight(15),
+                            padding: const EdgeInsets.all(8.0),
+                            color: Colors.white,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  FxSpacing.height(10),
+                                  FxText.bodyMedium('Compressing image')
+                                ]),
+                          ),
+                        ),
+                        barrierDismissible: false,
+                        barrierColor: Colors.grey.withOpacity(0.3));
                     // Pick an image
                     final XFile? image =
                         await _picker.pickImage(source: ImageSource.gallery);
@@ -508,51 +535,7 @@ class CreateOrderController extends BaseController {
                               "Invalid format file, (Only .jpg,.png are allowed)");
                     }
                     Uint8List byteImage = await image.readAsBytes();
-                    if (byteImage.lengthInBytes > 1000000) {
-                      Get.dialog(
-                          Center(
-                            child: Container(
-                              width: Utils.dynamicWidth(70),
-                              height: Utils.dynamicHeight(15),
-                              padding: const EdgeInsets.all(8.0),
-                              color: Colors.white,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircularProgressIndicator(),
-                                    FxSpacing.height(10),
-                                    FxText.bodyMedium('Compressing image')
-                                  ]),
-                            ),
-                          ),
-                          barrierDismissible: false,
-                          barrierColor: Colors.grey.withOpacity(0.3));
-                      img.Image image_temp = img.decodeImage(byteImage)!;
-                      int height;
-                      int width;
-                      if (image_temp.height > 1024) {
-                        height = (image_temp.height * 0.1).toInt();
-                      } else {
-                        height = image_temp.height;
-                      }
-
-                      if (image_temp.width > 1024) {
-                        width = (image_temp.width * 0.1).toInt();
-                      } else {
-                        width = image_temp.width;
-                      }
-
-                      img.Image resized_img = img.copyResize(image_temp,
-                          width: width, height: height);
-                      byteImage =
-                          Uint8List.fromList(img.encodePng(resized_img));
-
-                      Uint8List compressedImage = await compressImage(byteImage,
-                          height: image_temp.height, width: image_temp.width);
-
-                      byteImage = compressedImage;
-                      // debugPrint(byteImage.lengthInBytes.toString());
-                    }
+                    byteImage = await compressImage(byteImage);
                     fileType
                         .firstWhere((element) => element!.label == label)!
                         .data!
@@ -584,16 +567,13 @@ class CreateOrderController extends BaseController {
                 InkWell(
                   onTap: () async {
                     Get.back();
-                    final XFile? image = await _picker.pickImage(
-                        source: ImageSource.camera, imageQuality: 80);
-                    Uint8List byteImage = await image!.readAsBytes();
-                    // debugPrint(byteImage.lengthInBytes.toString());
-                    if (byteImage.lengthInBytes > 1000000) {
-                      Get.dialog(
-                          Container(
+                    Get.dialog(
+                        Center(
+                          child: Container(
                             width: Utils.dynamicWidth(70),
                             height: Utils.dynamicHeight(15),
                             padding: const EdgeInsets.all(8.0),
+                            color: Colors.white,
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -602,34 +582,13 @@ class CreateOrderController extends BaseController {
                                   FxText.bodyMedium('Compressing image')
                                 ]),
                           ),
-                          barrierDismissible: false,
-                          barrierColor: Colors.grey.withOpacity(0.3));
-                      img.Image image_temp = img.decodeImage(byteImage)!;
-                      int height;
-                      int width;
-                      if (image_temp.height > 1024) {
-                        height = (image_temp.height * 0.1).toInt();
-                      } else {
-                        height = image_temp.height;
-                      }
-
-                      if (image_temp.width > 1024) {
-                        width = (image_temp.width * 0.1).toInt();
-                      } else {
-                        width = image_temp.width;
-                      }
-
-                      img.Image resized_img = img.copyResize(image_temp,
-                          width: width, height: height);
-                      byteImage =
-                          Uint8List.fromList(img.encodePng(resized_img));
-
-                      Uint8List compressedImage = await compressImage(byteImage,
-                          height: image_temp.height, width: image_temp.width);
-
-                      byteImage = compressedImage;
-                      // debugPrint(byteImage.lengthInBytes.toString());
-                    }
+                        ),
+                        barrierDismissible: false,
+                        barrierColor: Colors.grey.withOpacity(0.3));
+                    final XFile? image = await _picker.pickImage(
+                        source: ImageSource.camera, imageQuality: 80);
+                    Uint8List byteImage = await image!.readAsBytes();
+                    byteImage = await compressImage(byteImage);
                     fileType
                         .firstWhere((element) => element!.label == label)!
                         .data!
@@ -667,11 +626,64 @@ class CreateOrderController extends BaseController {
 
   Future<Uint8List> compressImage(Uint8List list,
       {int? height, int? width}) async {
-    var result = await FlutterImageCompress.compressWithList(list,
+    Uint8List listProcess = list;
+    int length = listProcess.lengthInBytes;
+    int maxLength = 500000;
+    int retry = 1;
+    if (length > maxLength) {
+      while (length > maxLength) {
+        img.Image image_temp = img.decodeImage(listProcess)!;
+        int height;
+        int width;
+        debugPrint("$length $maxLength ${retry.toString()}");
+        // if (image_temp.height > 1024) {
+        height = (image_temp.height * _getPercentCompress(retry)).toInt();
+        // } else {
+        //   height = image_temp.height;
+        // }
+
+        // if (image_temp.width > 1024) {
+        width = (image_temp.width * _getPercentCompress(retry)).toInt();
+        // } else {
+        //   width = image_temp.width;
+        // }
+
+        img.Image resized_img =
+            img.copyResize(image_temp, width: width, height: height);
+        listProcess = Uint8List.fromList(img.encodePng(resized_img));
+
+        // Uint8List compressedImage = await compressImage(listProcess,
+        //     height: image_temp.height, width: image_temp.width);
+
+        // listProcess = compressedImage;
+        length = listProcess.lengthInBytes;
+        retry++;
+      }
+
+      // debugPrint(byteImage.lengthInBytes.toString());
+    }
+    var result = await FlutterImageCompress.compressWithList(listProcess,
         quality: 96, rotate: 0, format: CompressFormat.png);
     debugPrint(list.length.toString());
     debugPrint(result.length.toString());
     if (Get.isDialogOpen!) Get.back();
     return result;
+  }
+
+  double _getPercentCompress(int retry) {
+    int maxRetryCompress = 3;
+    if (retry <= maxRetryCompress) {
+      switch (retry) {
+        case 1:
+          return 0.4;
+        case 2:
+          return 0.6;
+        case 3:
+        default:
+          return 0.8;
+      }
+    } else {
+      return 0.8;
+    }
   }
 }

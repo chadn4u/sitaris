@@ -36,6 +36,7 @@ class OnBoardController extends BaseController {
     themeController = Get.find<ThemeController>();
     theme = themeController.getTheme();
     getToken().then((value) {
+      // Utils.showSnackBar(text: "test ${sessionController.name!.value}");
       if (sessionController.name != null) {
         navigateNext();
       } else {
@@ -50,7 +51,7 @@ class OnBoardController extends BaseController {
       //   Utils.showSnackBar(text: onError);
       // });
     }).catchError((onError) {
-      Utils.showSnackBar(text: onError);
+      Utils.showSnackBar(text: onError.toString());
     });
 
     // Future.delayed(const Duration(seconds: 5), () {
@@ -235,16 +236,21 @@ class OnBoardController extends BaseController {
   }
 
   void navigateNext() {
-    switch (sessionController.roleId!.value) {
-      case "1":
-        Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
-        break;
-      case "3":
-        Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
-        break;
-      default:
-        Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
-        break;
+    if (sessionController.roleId != null) {
+      debugPrint("jkhgf");
+      switch (sessionController.roleId!.value) {
+        case "1":
+        case "2":
+          Utils.offAndToNamed(name: AppRoutes.HOMESCREEN);
+          break;
+        case "3":
+          Utils.offAndToNamed(name: AppRoutes.USERHOMESCREEN);
+          break;
+        default:
+          Utils.offAndToNamed(name: AppRoutes.LOGINSCREEN);
+          break;
+      }
     }
+    return;
   }
 }

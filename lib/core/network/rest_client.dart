@@ -2,12 +2,9 @@
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as d;
 import 'dart:io';
-
-import 'package:sitaris/feature/controller/sessionController.dart';
 
 import 'apiInterceptor.dart';
 
