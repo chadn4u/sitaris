@@ -9,6 +9,7 @@ import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/button.dart';
+import 'package:sitaris/utils/enum.dart';
 import 'package:sitaris/utils/shimmer/shimmerOrderUser.dart';
 import 'package:sitaris/utils/shimmer/simmerProductUser.dart';
 import 'package:sitaris/utils/spacing.dart';
@@ -16,10 +17,6 @@ import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/utils.dart';
 import '../../presentation/user/home.dart';
 import '../themeController.dart';
-
-enum OrderState { INITIAL, LOADING, LOADED, EMPTY, ERROR }
-
-enum ProductState { INITIAL, LOADING, LOADED, EMPTY, ERROR }
 
 class HomeController extends BaseController {
   late ThemeData theme;
@@ -100,7 +97,8 @@ class HomeController extends BaseController {
     try {
       Map<String, dynamic> _dataForGet = {
         "order_id": "all",
-        "user_id": sessionController.id!.value,
+        "bank_id": sessionController.bankId!.value,
+        // "user_id": sessionController.id!.value,
       };
 
       BaseResponseOrder result =
@@ -114,7 +112,7 @@ class HomeController extends BaseController {
         if (!result.status!) {
           errorOrder!.value = result.message!;
           state.value = OrderState.ERROR;
-        } else if (result.data!.length < 1) {
+        } else if (result.data == null) {
           state.value = OrderState.EMPTY;
         } else {
           errorOrder!.value = "Unknown";
@@ -122,6 +120,7 @@ class HomeController extends BaseController {
         }
       }
     } catch (e) {
+      debugPrint('tai $e');
       errorOrder!.value = e.toString();
       state.value = OrderState.ERROR;
     }
@@ -250,9 +249,11 @@ class HomeController extends BaseController {
           child: RefreshIndicator(
             onRefresh: getOrder,
             child: ListView.builder(
-              itemCount: orderMasterModel.value.length,
+              itemCount: orderMasterModel.length,
               itemBuilder: (context, index) => _singleWorker(
                   name: orderMasterModel[index]!.orderNo!,
+                  orderId: orderMasterModel[index]!.orderId,
+                  date: orderMasterModel[index]!.orderDt,
                   totalProduct:
                       orderMasterModel[index]!.orderDetail!.length.toString(),
                   status: orderMasterModel[index]!.statusNm!),
@@ -330,13 +331,13 @@ class HomeController extends BaseController {
     );
   }
 
-  Widget _singleWorker(
-      {required String name,
-      required String totalProduct,
-      double? perHour,
-      double? rate,
-      required String status,
-      Color? statusColor}) {
+  Widget _singleWorker({
+    required String name,
+    required String totalProduct,
+    String? orderId,
+    String? date,
+    required String status,
+  }) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
       child: Container(
@@ -346,10 +347,13 @@ class HomeController extends BaseController {
             borderRadius: const BorderRadius.all(Radius.circular(8))),
         child: InkWell(
           onTap: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => WorkerInformationScreen()));
+            // debugPrint(date);
+            Utils.navigateTo(name: AppRoutes.DETAILORDERSCREEN, args: {
+              "orderDt": date,
+              "orderNo": name,
+              "orderId": orderId,
+              "label": orderId
+            });
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,

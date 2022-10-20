@@ -43,7 +43,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     data = Get.arguments["data"];
     WidgetsBinding.instance.addPostFrameCallback((_) {
       data.forEach((element) {
-        createOrderController.fileTypeBase.addAll(element!.files);
+        createOrderController.fileTypeBase.addAll(element!.files!);
       });
 
       createOrderController.fileTypeBase.forEach((element) {
@@ -100,23 +100,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               },
               physics: NeverScrollableScrollPhysics(),
               children: [
-                SingleChildScrollView(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: FxSpacing.fromLTRB(10, 0, 0, 5),
-                          child: const FxText.bodyLarge("Informasi Kontak",
-                              fontWeight: 700,
-                              muted: true,
-                              color: Colors.black),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: FxSpacing.fromLTRB(10, 0, 0, 5),
+                        child: const FxText.bodyLarge("Informasi Kontak",
+                            fontWeight: 700, muted: true, color: Colors.black),
+                      ),
+                      Expanded(
+                        child: Scrollbar(
+                          interactive: true,
+                          thumbVisibility: true,
+                          child: ListView(
                             children: [
                               (createOrderController.sessionController.roleId ==
                                       "1")
@@ -145,7 +144,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                       })
                                   : Container(),
                               createOrderController.contactInfoWidget(
-                                  label: "Nama", type: "TextBox"),
+                                  label: "Nama Debitur",
+                                  type: "TextBox",
+                                  controllerTextbox:
+                                      createOrderController.namaController),
+                              createOrderController.contactInfoWidget(
+                                  label: "Nomor Sertifikat",
+                                  type: "TextBox",
+                                  controllerTextbox:
+                                      createOrderController.sertifikat),
                               createOrderController.contactInfoWidget(
                                   label: "Provinsi",
                                   type: "DropDown",
@@ -284,16 +291,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               )
                             ],
                           ),
-                        )
+                        ),
+                      ),
 
-                        // singleTask(
-                        //     subject: "Mathematics",
-                        //     task: "Example 2",
-                        //     statusText: "Not submit",
-                        //     status: 1,
-                        //     submissionDate: "22/07/20"),
-                      ],
-                    ),
+                      // singleTask(
+                      //     subject: "Mathematics",
+                      //     task: "Example 2",
+                      //     statusText: "Not submit",
+                      //     status: 1,
+                      //     submissionDate: "22/07/20"),
+                    ],
                   ),
                 ),
                 ListView(

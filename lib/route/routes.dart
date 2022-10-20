@@ -1,12 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:sitaris/feature/presentation/detailOrder.dart';
 import 'package:sitaris/feature/presentation/forgotPassScreen.dart';
 import 'package:sitaris/feature/presentation/home.dart';
 import 'package:sitaris/feature/presentation/imageZoom.dart';
 import 'package:sitaris/feature/presentation/loginScreen.dart';
 import 'package:sitaris/feature/presentation/onBoard.dart';
 import 'package:sitaris/feature/presentation/registerScreen.dart';
+import 'package:sitaris/feature/presentation/staff/detailTask.dart';
 import 'package:sitaris/feature/presentation/user/createOrder.dart';
 import 'package:sitaris/feature/presentation/user/home.dart';
 
@@ -16,9 +18,11 @@ class AppRoutes {
   static const String FORGOTSCREEN = '/forgotScreen';
   static const String ONBOARDSCREEN = '/onBoardScreen';
   static const String ZOOMSCREEN = '/zoomScreen';
+  static const String DETAILORDERSCREEN = '/detailOrderScreen';
 
   //staff
   static const String HOMESCREEN = '/homeScreen';
+  static const String DETAILTASKSCREEN = '/detailTaskScreen';
 
   //user
   static const String USERHOMESCREEN = '/userHomeScreen';
@@ -33,9 +37,12 @@ class RoutingClass {
     GetPage(name: AppRoutes.FORGOTSCREEN, page: () => ForgotPasswordScreen()),
     GetPage(name: AppRoutes.ZOOMSCREEN, page: () => ImageZoom()),
     GetPage(name: AppRoutes.ONBOARDSCREEN, page: () => const OnBoardScreen()),
+    GetPage(name: AppRoutes.DETAILORDERSCREEN, page: () => DetailOrderScreen()),
 
     //staff
     GetPage(name: AppRoutes.HOMESCREEN, page: () => const HomeScreen()),
+    GetPage(
+        name: AppRoutes.DETAILTASKSCREEN, page: () => const DetailTaskPage()),
 
     //User
     GetPage(name: AppRoutes.USERHOMESCREEN, page: () => const UserHomeScreen()),

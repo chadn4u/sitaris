@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 class ProductModel {
   late String? prodId;
   late String? prodNm;
-  late List<FileTypeModel?> files;
+  late List<FileTypeModel?>? files;
 
   bool selected = false;
 
@@ -12,11 +12,13 @@ class ProductModel {
   ProductModel.fromJson(Map<String, dynamic> json) {
     prodId = json['prod_id'];
     prodNm = json['prod_nm'];
-    files = (json['files'] as List)
-        .map((e) => e == null
-            ? null
-            : FileTypeModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    files = (json['files'] != null)
+        ? (json['files'] as List)
+            .map((e) => e == null
+                ? null
+                : FileTypeModel.fromJson(e as Map<String, dynamic>))
+            .toList()
+        : null;
   }
   Map<String, dynamic> toJson() =>
       {"prod_id": prodId, "prod_nm": prodNm, "files": files};

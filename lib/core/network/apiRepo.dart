@@ -13,6 +13,7 @@ import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/orderPreset/orderPreset.dart';
 import 'package:sitaris/feature/model/product/product.dart';
 import 'package:sitaris/feature/model/province/province.dart';
+import 'package:sitaris/feature/model/task/taskByDept.dart';
 import 'package:sitaris/feature/model/token/token.dart';
 
 class ApiRepository {
@@ -186,5 +187,33 @@ class ApiRepository {
     debugPrint('test ${restClient.connectionClose}');
 
     return BaseResponse.fromJson(result);
+  }
+
+  Future<BaseResponseProduct> getProductByOrderId(
+      {Map<String, dynamic>? data}) async {
+    final result = await restClient.request(
+        "${BASE_URL}productbyord/list", Method.GET, data,
+        opt: Options(
+          headers: {
+            'requirestoken': true,
+          },
+        ));
+    restClient.close();
+
+    return BaseResponseProduct.fromJson(result);
+  }
+
+  Future<BaseResponseTaskByDept> getTaskByDept(
+      {Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}taskbydept/list", Method.GET, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseTaskByDept.fromJson(result);
   }
 }

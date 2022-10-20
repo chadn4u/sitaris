@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sitaris/utils/customIcon.dart';
 
 class Utils {
@@ -75,6 +76,14 @@ class Utils {
     //   return MediaQuery.of(Get.context).size.height * (val / 100);
     // } else
     return MediaQuery.of(Get.context!).size.height * (val / 100);
+  }
+
+  static String dateFormat(String date) {
+    final fFormat = new DateFormat('dd-MMM-yyyy');
+    final f = new DateFormat('yyyy-MM-dd');
+    final formattedDate =
+        "${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}";
+    return fFormat.format(f.parse(formattedDate));
   }
 
   // static double dynamicFont(double val) {

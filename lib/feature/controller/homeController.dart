@@ -9,18 +9,16 @@ import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/product/product.dart';
+import 'package:sitaris/feature/model/task/taskByDept.dart';
 import 'package:sitaris/feature/presentation/home.dart';
 import 'package:sitaris/utils/container.dart';
+import 'package:sitaris/utils/enum.dart';
 import 'package:sitaris/utils/shimmer/shimmerOrderAdmin.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 
 import '../../route/routes.dart';
 import '../../utils/utils.dart';
-
-enum LoadingProductState { INITIAL, LOADING, LOADED, ERROR }
-
-enum LoadingOrderState { INITIAL, LOADING, LOADED, ERROR, EMPTY }
 
 class HomeController extends BaseController {
   late ThemeData theme;
@@ -29,8 +27,6 @@ class HomeController extends BaseController {
   RxList<Map<String, dynamic>> dummyList = <Map<String, dynamic>>[].obs;
   RxList<ProductModel?> listDataProduct = <ProductModel?>[].obs;
 
-  final fFormat = new DateFormat('dd-MMM-yyyy');
-  final f = new DateFormat('yyyy-MM-dd');
   ScrollController scrollController = ScrollController();
   ApiRepository _apiRepository = ApiRepository();
   late TabController tabController;
@@ -62,7 +58,66 @@ class HomeController extends BaseController {
         "icon": Icons.exit_to_app
       },
     ];
-    if (sessionController.roleId!.value == '1') getOrder();
+    if (sessionController.roleId!.value == '1')
+      getOrder();
+    else
+      getTask();
+  }
+
+  Future<void> getTask() async {
+    stateOrder.value = LoadingOrderState.LOADING;
+    try {
+      Map<String, dynamic> _dataForGet = {
+        "dept_id": sessionController.deptId!.value,
+      };
+      dummyList.clear();
+
+      BaseResponseTaskByDept result =
+          await _apiRepository.getTaskByDept(data: _dataForGet);
+
+      // print(data.status);
+      if (result.status! && result.data != null) {
+        //20221007
+        if (result.data!.length > 0) {
+          result.data!.forEach((element) {
+            // debugPrint('a');
+            //list Task
+            element!.orders!.forEach((elements) {
+              // debugPrint('b');
+              //list Ordernya
+              elements!.orderDetail!.forEach((elementsss) {
+                // debugPrint('c');
+                //List Productnya
+                dummyList.add({
+                  "initial": getIcon(elements.statusNm!),
+                  "status": elements.statusNm!,
+                  "nama": elements.orderCustNm!.toUpperCase(),
+                  "dateForFormat": elements.orderDt,
+                  "order": elements,
+                  "product": elementsss,
+                  "taskNm": element.taskHead,
+                  "title": element.taskHead!.toUpperCase(),
+                  "subtitle":
+                      "No. Order: #${elements.orderNo} | ${elementsss!.prodNm!}",
+                });
+              });
+            });
+          });
+          stateOrder.value = LoadingOrderState.LOADED;
+        } else {
+          stateOrder.value = LoadingOrderState.EMPTY;
+        }
+      } else {
+        errorTextOrder = result.message!;
+        stateOrder.value = LoadingOrderState.ERROR;
+        // if (!result.status!) Utils.showSnackBar(text: result.message!);
+      }
+    } catch (e) {
+      errorTextOrder = e.toString();
+      stateOrder.value = LoadingOrderState.ERROR;
+      // Utils.showSnackBar(text: "$e");
+    }
+    return;
   }
 
   Future<void> getOrder() async {
@@ -85,8 +140,9 @@ class HomeController extends BaseController {
               "initial": getIcon(element!.statusNm!),
               "status": element.statusNm!,
               "nama": element.orderCustNm!.toUpperCase(),
-              "tanggal":
-                  "${element.orderDt!.substring(0, 4)}-${element.orderDt!.substring(4, 6)}-${element.orderDt!.substring(6, 8)}",
+              "dateForFormat": element.orderDt,
+              "orderNo": element.orderNo,
+              "orderId": element.orderId,
               "title": element.bankNm!.toUpperCase(),
               "subtitle": "No. Order: #${element.orderNo}",
             });
@@ -169,6 +225,8 @@ class HomeController extends BaseController {
                                       .then((value) {
                                     if (sessionController.roleId == "1") {
                                       getOrder();
+                                    } else {
+                                      getTask();
                                     }
                                   });
                                 } else {

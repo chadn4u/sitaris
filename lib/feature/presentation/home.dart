@@ -1,16 +1,22 @@
 // ignore_for_file: avoid_unnecessary_containers, unused_element
 
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/feature/controller/homeController.dart';
 import 'package:sitaris/feature/presentation/account.dart';
 import 'package:sitaris/feature/presentation/orders.dart';
 import 'package:sitaris/feature/presentation/staff/scan.dart';
+import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/container.dart';
+import 'package:sitaris/utils/enum.dart';
 import 'package:sitaris/utils/fxCard.dart';
 import 'package:sitaris/utils/scrollBehavior.dart';
 import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
+import 'package:sitaris/utils/textField.dart';
+import 'package:sitaris/utils/textType.dart';
+import 'package:sitaris/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -53,9 +59,50 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButton: Obx(
-          () => (controller.selectedIndex.value == 0)
+    return Obx(
+      () => Scaffold(
+          appBar: (controller.selectedIndex.value == 1)
+              ? AppBar(
+                  toolbarHeight: 70,
+                  backgroundColor: Colors.grey.shade100,
+                  elevation: 0,
+                  title: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: FxTextField(
+                              hintText: "Search",
+                              prefixIcon: Icon(
+                                FeatherIcons.search,
+                                size: 18,
+                                color: controller.theme.colorScheme.onBackground
+                                    .withAlpha(150),
+                              ),
+                              filled: true,
+                              isDense: true,
+                              fillColor: Colors.white,
+                              hintStyle: FxTextStyle.bodyMedium(),
+                              labelStyle: FxTextStyle.bodyMedium(),
+                              style: FxTextStyle.bodyMedium(),
+                              textCapitalization: TextCapitalization.sentences,
+                              labelText: "Search",
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              // cursorColor: customTheme.groceryPrimary,
+                              focusedBorderColor: Colors.transparent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : null,
+          floatingActionButton: (controller.selectedIndex.value == 0 &&
+                  controller.sessionController.roleId == '1')
               ? FloatingActionButton(
                   onPressed: () {
                     if (controller.state.value == LoadingProductState.INITIAL ||
@@ -71,9 +118,7 @@ class _HomeScreenState extends State<HomeScreen>
                       : Icon(Icons.add),
                 )
               : Container(),
-        ),
-        bottomNavigationBar: Obx(
-          () => BottomAppBar(
+          bottomNavigationBar: BottomAppBar(
               elevation: 0,
               shape: const CircularNotchedRectangle(),
               child: FxCard(
@@ -117,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Icon(
-                                        Icons.list_alt,
+                                        Icons.search,
                                         color: controller
                                             .theme.colorScheme.primary,
                                       ),
@@ -135,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     ],
                                   )
                                 : Icon(
-                                    Icons.list_alt_outlined,
+                                    Icons.search_outlined,
                                     color: controller
                                         .theme.colorScheme.onBackground,
                                   )),
@@ -196,17 +241,17 @@ class _HomeScreenState extends State<HomeScreen>
                                         .theme.colorScheme.onBackground,
                                   )),
                       ]))),
-        ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: controller.tabController,
-          children: <Widget>[
-            _HomeScreen(),
-            const OrderScreen(),
-            const ScanScreen(),
-            AccountScreen(),
-          ],
-        ));
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: controller.tabController,
+            children: <Widget>[
+              _HomeScreen(),
+              const OrderScreen(),
+              const ScanScreen(),
+              AccountScreen(),
+            ],
+          )),
+    );
   }
 }
 
@@ -383,55 +428,72 @@ class ListData extends StatelessWidget {
             itemCount: data.length,
             itemBuilder: (context, index) => Padding(
               padding: FxSpacing.xy(16, 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CircleAvatar(
-                      backgroundColor: Colors.grey.withBlue(10),
-                      child: Center(
-                        child: Image.asset(
-                          data[index]["initial"],
-                          height: 20,
-                          width: 20,
-                        ),
-                      )),
-                  FxSpacing.width(20),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FxText.titleSmall(
-                                data[index]["title"],
-                                fontWeight: 800,
-                              ),
-                              FxText.bodyMedium(
-                                data[index]['subtitle'],
-                                fontWeight: 600,
-                              ),
-                              FxText.titleSmall(
-                                "Pelanggan: ${data[index]["nama"]}",
-                                fontWeight: 600,
-                              ),
-                              FxText.titleSmall(
-                                "Status: ${data[index]["status"]}",
-                                fontWeight: 600,
-                              ),
-                            ],
+              child: InkWell(
+                onTap: () {
+                  debugPrint(data[index].toString());
+                  if (controller.sessionController.roleId == "1") {
+                    Utils.navigateTo(name: AppRoutes.DETAILORDERSCREEN, args: {
+                      "orderDt": data[index]["dateForFormat"],
+                      "orderNo": data[index]["orderNo"],
+                      "orderId": data[index]["orderId"]
+                    });
+                  } else {
+                    Utils.navigateTo(name: AppRoutes.DETAILTASKSCREEN, args: {
+                      "order": data[index]["order"],
+                      "product": data[index]["product"],
+                      "tasktitle": data[index]["taskNm"]
+                    });
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CircleAvatar(
+                        backgroundColor: Colors.grey.withBlue(10),
+                        child: Center(
+                          child: Image.asset(
+                            data[index]["initial"],
+                            height: 20,
+                            width: 20,
                           ),
-                        ),
-                        FxText.titleSmall(
-                          controller.fFormat.format(
-                              controller.f.parse(data[index]['tanggal'])),
-                          fontWeight: 600,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                        )),
+                    FxSpacing.width(20),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FxText.titleSmall(
+                                  data[index]["title"],
+                                  fontWeight: 800,
+                                ),
+                                FxText.bodyMedium(
+                                  data[index]['subtitle'],
+                                  fontWeight: 600,
+                                ),
+                                FxText.titleSmall(
+                                  "Debitur: ${data[index]["nama"]}",
+                                  fontWeight: 600,
+                                ),
+                                FxText.titleSmall(
+                                  "Status: ${data[index]["status"]}",
+                                  fontWeight: 600,
+                                ),
+                              ],
+                            ),
+                          ),
+                          FxText.titleSmall(
+                            Utils.dateFormat(data[index]['dateForFormat']),
+                            fontWeight: 600,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
