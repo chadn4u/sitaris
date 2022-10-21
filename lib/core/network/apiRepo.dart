@@ -216,4 +216,18 @@ class ApiRepository {
 
     return BaseResponseTaskByDept.fromJson(result);
   }
+
+  Future<BaseResponseAllTask> getTaskByProd(
+      {Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}taskbyprod/list", Method.GET, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponseAllTask.fromJson(result);
+  }
 }

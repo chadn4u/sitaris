@@ -436,13 +436,15 @@ class ListData extends StatelessWidget {
                       "orderDt": data[index]["dateForFormat"],
                       "orderNo": data[index]["orderNo"],
                       "orderId": data[index]["orderId"]
-                    });
+                    })!
+                        .then((value) => controller.getOrder());
                   } else {
                     Utils.navigateTo(name: AppRoutes.DETAILTASKSCREEN, args: {
                       "order": data[index]["order"],
                       "product": data[index]["product"],
                       "tasktitle": data[index]["taskNm"]
-                    });
+                    })!
+                        .then((value) => controller.getTask());
                   }
                 },
                 child: Row(

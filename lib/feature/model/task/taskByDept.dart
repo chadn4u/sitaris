@@ -20,6 +20,26 @@ class BaseResponseTaskByDept {
                   .toList());
 }
 
+class BaseResponseAllTask {
+  late bool? status;
+  late String? message;
+  late List<TaskModel?>? data;
+
+  BaseResponseAllTask({this.status, this.message, this.data});
+
+  factory BaseResponseAllTask.fromJson(Map<String, dynamic> json) =>
+      BaseResponseAllTask(
+          status: json['status'],
+          message: json['message'],
+          data: json['data'] == null
+              ? null
+              : (json['data'] as List)
+                  .map((e) => e == null
+                      ? null
+                      : TaskModel.fromJson(e as Map<String, dynamic>))
+                  .toList());
+}
+
 class ListTask {
   late String? taskHead;
   late List<OrderMasterModel?>? orders;
