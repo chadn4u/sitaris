@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sitaris/feature/controller/detailOrderController.dart';
+import 'package:sitaris/feature/controller/user/detailOrderController.dart';
+import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/utils/text.dart';
 
 class DetailOrderScreen extends StatefulWidget {
@@ -13,13 +14,18 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
   // late ProductModel _productModel;
   late String _orderDt;
   late String _orderNo;
+  late OrderMasterModel _orderMaster;
   @override
   void initState() {
     super.initState();
     // _productModel = Get.arguments['product'];
     _orderDt = Get.arguments['orderDt'];
     _orderNo = Get.arguments['orderNo'];
+    _orderMaster = Get.arguments['orderMaster'];
     _detailOrderController = Get.put(DetailOrderController());
+    _detailOrderController.orderMasterModel = _orderMaster;
+
+    debugPrint(_orderNo);
   }
 
   @override

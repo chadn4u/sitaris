@@ -230,4 +230,17 @@ class ApiRepository {
 
     return BaseResponseAllTask.fromJson(result);
   }
+
+  Future<BaseResponse> postTaskSubmit({Map<String, dynamic>? data}) async {
+    final result =
+        await restClient.request("${BASE_URL}updatetask", Method.POST, data,
+            opt: Options(
+              headers: {
+                'requirestoken': true,
+              },
+            ));
+    restClient.close();
+
+    return BaseResponse.fromJson(result);
+  }
 }

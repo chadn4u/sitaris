@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sitaris/utils/spacing.dart';
 
 class ShimmerProductUser extends StatelessWidget {
   const ShimmerProductUser({super.key});

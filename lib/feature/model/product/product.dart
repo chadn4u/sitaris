@@ -4,14 +4,16 @@ class ProductModel {
   late String? prodId;
   late String? prodNm;
   late List<FileTypeModel?>? files;
+  late String? lastTaskActive;
 
   bool selected = false;
 
-  ProductModel({this.prodId, this.prodNm});
+  ProductModel({this.prodId, this.prodNm, this.lastTaskActive});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
     prodId = json['prod_id'];
     prodNm = json['prod_nm'];
+    lastTaskActive = json['lastTaskActive'];
     files = (json['files'] != null)
         ? (json['files'] as List)
             .map((e) => e == null

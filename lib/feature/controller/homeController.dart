@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
@@ -143,6 +142,7 @@ class HomeController extends BaseController {
               "dateForFormat": element.orderDt,
               "orderNo": element.orderNo,
               "orderId": element.orderId,
+              "order": element,
               "title": element.bankNm!.toUpperCase(),
               "subtitle": "No. Order: #${element.orderNo}",
             });

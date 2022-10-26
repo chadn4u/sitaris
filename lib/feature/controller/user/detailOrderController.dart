@@ -4,7 +4,9 @@ import 'package:lottie/lottie.dart';
 import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/core/network/apiRepo.dart';
 import 'package:sitaris/feature/controller/themeController.dart';
+import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/product/product.dart';
+import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/button.dart';
 import 'package:sitaris/utils/container.dart';
 import 'package:sitaris/utils/enum.dart';
@@ -17,6 +19,7 @@ class DetailOrderController extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
   late String orderId;
+  late OrderMasterModel orderMasterModel;
   RxList<ProductModel?> listProduct = RxList();
   ApiRepository _apiRepository = new ApiRepository();
   Rx<ProductState> stateProduct = ProductState.INITIAL.obs;
@@ -123,7 +126,13 @@ class DetailOrderController extends BaseController {
         itemCount: listProduct.length,
         itemBuilder: (context, index) => FxContainer(
           onTap: () {
-            // controller.goToSingleCoinScreen(coin);
+            Utils.navigateTo(name: AppRoutes.DETAILTASKUSER, args: {
+              "order": orderMasterModel,
+              "product": OrderDetailModel(
+                  prodId: listProduct[index]!.prodId,
+                  prodNm: listProduct[index]!.prodNm),
+              "tasktitle": listProduct[index]!.lastTaskActive
+            });
           },
           margin: FxSpacing.bottom(20),
           child: Row(
@@ -159,7 +168,9 @@ class DetailOrderController extends BaseController {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   FxText.bodySmall(
-                    "Pengambilan Berkas",
+                    listProduct[index]!.lastTaskActive == null
+                        ? ""
+                        : listProduct[index]!.lastTaskActive!,
                     fontWeight: 600,
                     fontSize: 10,
                   ),

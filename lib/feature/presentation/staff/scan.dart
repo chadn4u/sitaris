@@ -1,8 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:sitaris/core/network/apiRepo.dart';
+import 'package:sitaris/feature/controller/homeController.dart';
+import 'package:sitaris/feature/model/baseResponse/baseResponse.dart';
+import 'package:sitaris/utils/spacing.dart';
+import 'package:sitaris/utils/text.dart';
+import 'package:sitaris/utils/utils.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({Key? key}) : super(key: key);
@@ -16,6 +24,8 @@ class _ScanScreenState extends State<ScanScreen>
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  late HomeController homeController;
+  Map<String, dynamic>? json;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -29,92 +39,18 @@ class _ScanScreenState extends State<ScanScreen>
   }
 
   @override
+  void initState() {
+    super.initState();
+    homeController = Get.find<HomeController>();
+    // homeController.tabController.animateTo(0);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  else
-                    const Text('Scan a code'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}');
-                                } else {
-                                  return const Text('loading');
-                                }
-                              },
-                            )),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.pauseCamera();
-                          },
-                          child: const Text('pause',
-                              style: TextStyle(fontSize: 20)),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.resumeCamera();
-                          },
-                          child: const Text('resume',
-                              style: TextStyle(fontSize: 20)),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -146,10 +82,74 @@ class _ScanScreenState extends State<ScanScreen>
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      // if (scanData) {
+      if (describeEnum(scanData.format) == 'qrcode') {
+        if (scanData.code != null) {
+          if (_checkValidData(scanData.code!)) {
+            controller.pauseCamera();
+            _postTask(json!);
+          }
+        }
+      }
+      // notifyListeners();
+      // }
     });
+  }
+
+  void _postTask(Map<String, dynamic> data) async {
+    ApiRepository _apiRepository = ApiRepository();
+    try {
+      BaseResponse result = await _apiRepository.postTaskSubmit(data: data);
+
+      // print(data.status);
+      if (result.status!) {
+        Get.dialog(
+            Center(
+              child: Container(
+                width: Utils.dynamicWidth(70),
+                height: Utils.dynamicHeight(15),
+                padding: const EdgeInsets.all(8.0),
+                color: Colors.white,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 45,
+                      ),
+                      FxSpacing.height(10),
+                      FxText.bodyMedium('Task berhasil di update')
+                    ]),
+              ),
+            ),
+            barrierDismissible: false,
+            barrierColor: Colors.grey.withOpacity(0.3));
+        Future.delayed(Duration(seconds: 2), (() {
+          Utils.navigateBack();
+          homeController.tabController.animateTo(0);
+        }));
+      } else {
+        Utils.showSnackBar(text: result.message!);
+      }
+    } catch (e) {
+      Utils.showSnackBar(text: "$e");
+    }
+  }
+
+  bool _checkValidData(String value) {
+    // $_cardN0|$_name|$_cellNo|$_mbrsNo
+    String data = utf8.decode(base64.decode(value));
+    json = jsonDecode(data);
+    try {
+      if (json!["order_id"] != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {

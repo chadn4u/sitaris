@@ -3,18 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sitaris/feature/controller/user/homeController.dart';
 import 'package:sitaris/feature/presentation/user/profile.dart';
-import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/customBottomNavigation.dart';
-import 'package:sitaris/utils/shimmer/shimmerOrderUser.dart';
-import 'package:sitaris/utils/shimmer/simmerProductUser.dart';
-import 'package:sitaris/utils/spacing.dart';
 import 'package:sitaris/utils/text.dart';
 import 'package:sitaris/utils/textField.dart';
 import 'package:sitaris/utils/textType.dart';
-import 'package:sitaris/utils/utils.dart';
 
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({Key? key}) : super(key: key);
@@ -171,7 +165,7 @@ class CategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    // ThemeData theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(top: 12, bottom: 12),
       height: MediaQuery.of(context).size.height * 0.1,

@@ -98,6 +98,8 @@ class TaskModel {
   late String? startcnt;
   late String? deptId;
   late String? deptNm;
+  late String? status;
+  late String? taskCompleteBy;
 
   TaskModel(
       {this.taskId,
@@ -105,7 +107,9 @@ class TaskModel {
       this.mandays,
       this.startcnt,
       this.deptId,
-      this.deptNm});
+      this.deptNm,
+      this.status,
+      this.taskCompleteBy});
 
   TaskModel.fromJson(Map<String, dynamic> json) {
     taskId = json['task_id'];
@@ -114,5 +118,7 @@ class TaskModel {
     startcnt = json['startcnt'];
     deptId = json['dept_id'];
     deptNm = json['dept_nm'];
+    status = json['status'];
+    taskCompleteBy = json['task_completion_by'];
   }
 }

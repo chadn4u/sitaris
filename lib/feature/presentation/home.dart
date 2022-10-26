@@ -304,10 +304,12 @@ class _HomeScreen extends StatelessWidget {
                     mainAxisSpacing: 20,
                     childAspectRatio: 3 / 2,
                     crossAxisSpacing: 20,
-                    children: const <Widget>[
+                    children: <Widget>[
                       _SingleSubject(
                         completed: "Pekerjaan Tertunda",
-                        subject: '10',
+                        subject: controller.sessionController.roleId != '2'
+                            ? '10'
+                            : controller.dummyList.length.toString(),
                         backgroundColor: Colors.blue,
                       ),
                       _SingleSubject(
@@ -430,12 +432,13 @@ class ListData extends StatelessWidget {
               padding: FxSpacing.xy(16, 12),
               child: InkWell(
                 onTap: () {
-                  debugPrint(data[index].toString());
+                  debugPrint(data[index]["order"].toString());
                   if (controller.sessionController.roleId == "1") {
                     Utils.navigateTo(name: AppRoutes.DETAILORDERSCREEN, args: {
                       "orderDt": data[index]["dateForFormat"],
                       "orderNo": data[index]["orderNo"],
-                      "orderId": data[index]["orderId"]
+                      "orderId": data[index]["orderId"],
+                      "orderMaster": data[index]["order"]
                     })!
                         .then((value) => controller.getOrder());
                   } else {

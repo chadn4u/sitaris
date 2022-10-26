@@ -180,7 +180,6 @@ class OnBoardController extends BaseController {
         });
       }
       return true;
-      ;
     } catch (e) {
       Utils.showSnackBar(text: e.toString());
       return false;

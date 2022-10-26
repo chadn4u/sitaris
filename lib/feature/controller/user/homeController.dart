@@ -251,6 +251,7 @@ class HomeController extends BaseController {
             child: ListView.builder(
               itemCount: orderMasterModel.length,
               itemBuilder: (context, index) => _singleWorker(
+                  orderMasterModel: orderMasterModel[index]!,
                   name: orderMasterModel[index]!.orderNo!,
                   orderId: orderMasterModel[index]!.orderId,
                   date: orderMasterModel[index]!.orderDt,
@@ -334,6 +335,7 @@ class HomeController extends BaseController {
   Widget _singleWorker({
     required String name,
     required String totalProduct,
+    required OrderMasterModel orderMasterModel,
     String? orderId,
     String? date,
     required String status,
@@ -352,7 +354,8 @@ class HomeController extends BaseController {
               "orderDt": date,
               "orderNo": name,
               "orderId": orderId,
-              "label": orderId
+              "label": orderId,
+              "orderMaster": orderMasterModel
             });
           },
           child: Row(

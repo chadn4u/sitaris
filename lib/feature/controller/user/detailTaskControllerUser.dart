@@ -1,16 +1,9 @@
-// ignore_for_file: file_names
-
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sitaris/base/baseController.dart';
 import 'package:sitaris/core/network/apiRepo.dart';
-import 'package:sitaris/feature/model/baseResponse/baseResponse.dart';
 import 'package:sitaris/feature/model/order/order.dart';
 import 'package:sitaris/feature/model/task/taskByDept.dart';
-import 'package:sitaris/route/routes.dart';
-import 'package:sitaris/utils/button.dart';
 import 'package:sitaris/utils/enum.dart';
 import 'package:sitaris/utils/shimmer/shimmerOrderUser.dart';
 import 'package:sitaris/utils/spacing.dart';
@@ -20,7 +13,7 @@ import 'package:timeline_tile/timeline_tile.dart';
 
 import '../themeController.dart';
 
-class DetailTaskController extends BaseController {
+class DetailTaskControllerUser extends BaseController {
   late ThemeData theme;
   late ThemeController themeController;
   late String productId;
@@ -30,7 +23,6 @@ class DetailTaskController extends BaseController {
   String? errorTextOrder = "";
   RxList<TaskModel?> listTaskModel = <TaskModel?>[].obs;
   late OrderMasterModel orderMaster;
-  RxBool _processSubmit = false.obs;
 
   @override
   void onInit() {
@@ -40,9 +32,6 @@ class DetailTaskController extends BaseController {
   }
 
   void getAllTask() async {
-    if (listTaskModel.length > 0) {
-      listTaskModel.clear();
-    }
     state.value = DetailTaskState.LOADING;
     try {
       Map<String, dynamic> _dataForGet = {
@@ -75,77 +64,6 @@ class DetailTaskController extends BaseController {
     return;
   }
 
-  void _postTask(Map<String, dynamic> data) async {
-    _processSubmit.value = true;
-    try {
-      BaseResponse result = await _apiRepository.postTaskSubmit(data: data);
-
-      // print(data.status);
-      if (result.status!) {
-        _processSubmit.value = false;
-        Get.dialog(
-            Center(
-              child: Container(
-                width: Utils.dynamicWidth(70),
-                height: Utils.dynamicHeight(15),
-                padding: const EdgeInsets.all(8.0),
-                color: Colors.white,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                        size: 45,
-                      ),
-                      FxSpacing.height(10),
-                      FxText.bodyMedium('Task berhasil di update')
-                    ]),
-              ),
-            ),
-            barrierDismissible: false,
-            barrierColor: Colors.grey.withOpacity(0.3));
-        Future.delayed(Duration(seconds: 2), (() {
-          Utils.navigateBack();
-          getAllTask();
-        }));
-      } else {
-        _processSubmit.value = false;
-        Utils.showSnackBar(text: result.message!);
-      }
-    } catch (e) {
-      _processSubmit.value = false;
-      Utils.showSnackBar(text: "$e");
-    }
-  }
-
-  void _submitTask(int index) {
-    Map<String, dynamic> _data = {
-      "order_id": orderid,
-      "prod_id": productId,
-      "task_id": listTaskModel[index]!.taskId,
-      "user_id": sessionController.id!.value
-    };
-    var bytes1 =
-        base64.encode(utf8.encode(_data.toString())); // data being hashed
-    // var digest1 = sha256.convert(bytes1);
-    // debugPrint(utf8.decode(base64.decode(bytes1)));
-    if (index < (listTaskModel.length - 1)) {
-      String deptId = listTaskModel[index + 1]!.deptId!;
-      if (deptId == sessionController.deptId!.value) {
-        _postTask(_data);
-      } else {
-        Utils.navigateTo(name: AppRoutes.QRSCREEN, args: {
-          "qrData": bytes1,
-          "nextDept": listTaskModel[index + 1]!.deptNm
-        })!
-            .then((value) => getAllTask());
-      }
-    } else {
-      _postTask(_data);
-    }
-  }
-
   Widget getTimelineWidget() {
     switch (state.value) {
       case DetailTaskState.ERROR:
@@ -157,19 +75,6 @@ class DetailTaskController extends BaseController {
       case DetailTaskState.LOADING:
       default:
         return ShimmerOrderUser();
-    }
-  }
-
-  String _labelButton(index) {
-    if (index < (listTaskModel.length - 1)) {
-      String deptId = listTaskModel[index + 1]!.deptId!;
-      if (deptId == sessionController.deptId!.value) {
-        return "Submit";
-      } else {
-        return "Cetak QR";
-      }
-    } else {
-      return "Submit";
     }
   }
 
@@ -191,25 +96,6 @@ class DetailTaskController extends BaseController {
                 FxText.labelMedium(listTaskModel[index]!.taskNm!,
                     color: Colors.black, fontWeight: 600),
                 FxSpacing.height(5),
-                listTaskModel[index]!.status! == "ACTIVE"
-                    ? Row(
-                        children: [
-                          FxButton.small(
-                            onPressed: (_processSubmit.value)
-                                ? () {}
-                                : () {
-                                    _submitTask(index);
-                                  },
-                            backgroundColor: Colors.green,
-                            child: FxText.bodyMedium(_labelButton(index),
-                                color: Colors.white,
-                                fontWeight: 400,
-                                muted: true),
-                            buttonType: FxButtonType.elevated,
-                          )
-                        ],
-                      )
-                    : Container(),
                 _getTimelineComplete(index)
               ],
             ),
