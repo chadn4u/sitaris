@@ -127,7 +127,7 @@ class DetailTaskController extends BaseController {
       "user_id": sessionController.id!.value
     };
     var bytes1 =
-        base64.encode(utf8.encode(_data.toString())); // data being hashed
+        base64.encode(utf8.encode(jsonEncode(_data))); // data being hashed
     // var digest1 = sha256.convert(bytes1);
     // debugPrint(utf8.decode(base64.decode(bytes1)));
     if (index < (listTaskModel.length - 1)) {

@@ -1,4 +1,4 @@
-package com.example.sitaris;
+package id.leaoffice.app;
 
 import io.flutter.embedding.android.FlutterActivity;
 

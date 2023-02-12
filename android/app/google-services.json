@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "935233401643",
+    "firebase_url": "https://lea-office-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "lea-office",
+    "storage_bucket": "lea-office.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935233401643:android:b96db8495bf8a49958cb6e",
+        "android_client_info": {
+          "package_name": "id.leaoffice.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935233401643-239vceh2oraki7gj89cn98sb4nhuolpf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.leaoffice.app",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "935233401643-fccme0k6uou9d3i01f70f0ijij6bornp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcVrAaLtWL9t4ut2l1btxPIS3xbI5TpB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "935233401643-fccme0k6uou9d3i01f70f0ijij6bornp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "935233401643-77e5s88v6o6eebqup78kei94tkdm8g1v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "id.leaoffice.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

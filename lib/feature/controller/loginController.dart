@@ -8,6 +8,7 @@ import 'package:sitaris/feature/controller/themeController.dart';
 import 'package:sitaris/feature/model/login/login.dart';
 import 'package:sitaris/route/routes.dart';
 import 'package:sitaris/utils/animation.dart';
+import 'package:sitaris/utils/notificationPlugin.dart';
 import 'package:sitaris/utils/utils.dart';
 
 class LoginController extends BaseController {
@@ -96,6 +97,8 @@ class LoginController extends BaseController {
   }
 
   void login() async {
+    // NotificationPlugin _notif = NotificationPlugin(Get.context!);
+    // _notif.showNotification();
     if (formKey.currentState!.validate()) {
       try {
         BaseResponseLogin result = await _apiRepository.postLogin(data: {

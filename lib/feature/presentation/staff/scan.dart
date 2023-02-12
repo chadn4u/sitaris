@@ -25,7 +25,7 @@ class _ScanScreenState extends State<ScanScreen>
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late HomeController homeController;
-  Map<String, dynamic>? json;
+  var json;
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
@@ -128,6 +128,7 @@ class _ScanScreenState extends State<ScanScreen>
         Future.delayed(Duration(seconds: 2), (() {
           Utils.navigateBack();
           homeController.tabController.animateTo(0);
+          homeController.getTask();
         }));
       } else {
         Utils.showSnackBar(text: result.message!);
